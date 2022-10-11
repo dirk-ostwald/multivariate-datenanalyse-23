@@ -1,0 +1,511 @@
+---
+fontsize: 8pt
+bibliography: 1_Referenzen.bib
+citation_package: natbib
+output:
+  beamer_presentation:
+    keep_tex: true
+    includes:
+      in_header: 1_header.tex
+---
+
+```{r, include = F}
+source("1_R_common.R")
+```
+
+#  {.plain}
+\center
+```{r, echo = FALSE, out.width = "20%"}
+knitr::include_graphics("1_Abbildungen/mvda_1_otto.png")
+```
+
+\vspace{2mm}
+
+\Huge
+Multivariate Datenanalyse
+\vspace{6mm}
+
+\Large
+MSc Psychologie WiSe 2022/23
+
+\vspace{6mm}
+\large
+Prof. Dr. Dirk Ostwald
+
+# {.plain}
+
+\vfill
+\center
+\huge
+\textcolor{red}{Aufnahme läuft!}
+\vfill
+
+
+#  {.plain}
+
+\vfill
+\center
+\huge
+\textcolor{black}{(1) Einführung}
+\vfill
+
+# {.plain}
+\vfill
+\begin{large}
+Prof. Dr. Dirk Ostwald (dirk.ostwald@ovgu.de)
+\end{large}
+\vspace{.7cm}
+
+\begin{minipage}{.3\linewidth}
+\begin{center}
+\includegraphics[scale=.6]{1_Abbildungen/mvda_1_dirk.pdf}
+\end{center}
+\end{minipage}
+\begin{minipage}{.7\linewidth}
+\begin{small}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{ll}
+Seit 2021 	& W2 Professur Methodenlehre I				\\
+2014 - 2020 & W1 Professur Freie Universität Berlin 	\\
+2010 - 2014 & Postdoc BCCN \& MPIB Berlin				\\
+2007 - 2010 & PhD Psychologie Birmingham				\\
+2004 - 2006 & MSc Neurowissenschaften Tübingen			\\
+2005 - 2012 & BSc Mathematik Hagen						\\
+2000 - 2003 & BSc Medizin Hamburg						\\
+\end{tabular}
+\end{small}
+\end{minipage}
+\vspace{.7cm}
+
+\begin{large}
+\begin{tabular}{ll}
+Forschung 	& Komputationale Kognitive Neurowissenschaften	\\
+Lehre 		& Datenwissenschaft
+\end{tabular}
+\end{large}
+\vfill
+
+#
+[\textcolor{darkblue}{Homepage}](https://www.ipsy.ovgu.de/methodenlehre_I-path-980,1404.html)
+
+```{r, echo = FALSE, out.width = "70%"}
+knitr::include_graphics("1_Abbildungen/mvda_1_homepage.png")
+```
+
+# 
+\setstretch{3}
+\vfill
+\Large
+Motivation
+
+Datenwissenschaft
+
+Formalia
+\vfill
+
+# 
+\setstretch{3}
+\vfill
+\Large
+**Motivation**
+
+Datenwissenschaft
+
+Formalia
+\vfill
+
+# Motivation
+\setstretch{1.5}
+\large
+\textcolor{darkblue}{Multivariate Verfahren}
+
+\normalsize
+* Einblick in die moderne multivariate Datenanalyse
+
+* Methoden der Statistik und des Maschinellen Lernens
+
+\small
+```{r, echo = F}
+D = data.frame(c("Eindimensional, mehrdimensional", "Eindimensional, mehrdimensional"),
+               c("Eindimensional", "Mehrdimensional"))
+rownames(D) = c("Univariate Verfahren", "Multivariate Verfahren")
+
+# table visualization
+knitr::kable(D,
+             col.names  = c("Unabhängige Variable", "Abhängige Variable"),
+             align      = "ll",
+             "pipe")
+```
+
+\normalsize
+
+* Grundlagen (Vektoren, Matrizen, Eigenanalyse, Multivariate Normalverteilung)
+
+* Verfahren der Datenreduktion (Hauptkomponentenanalyse, Faktoranalyse)
+
+* Verfahren der frequentistischen Inferenz (ANOVA, Regression, Korrelation)
+
+* Verfahren der Klassifikation (Logistische Regression, SVMs, Neuronale Netze)
+
+
+# Motivation
+\textcolor{darkblue}{Neurobiologische Verarbeitung von Sinnesreizen}
+
+\normalsize
+Wie werden visuelle Stimuli im Gerhin verarbeitet?
+
+Wie entscheiden Menschen, ob sie ein Haus oder ein Gesicht wahrnehmen?
+
+```{r, echo = FALSE, out.width = "80%"}
+knitr::include_graphics("1_Abbildungen/mvda_1_neurosensorik.pdf")
+```
+
+$\rightarrow$ Allgemeine Psychologie, Biologische Psychologie, Kognitive Neurowissenschaften
+
+# Motivation
+\textcolor{darkblue}{Neurobiologische Verarbeitung von Sinnesreizen - Verhaltensdaten}
+
+\footnotesize
+```{r, echo = F}
+# simulation parameters
+n          = 12                            # number of trials
+cond       = c("Gesicht", "Haus")          # experimental conditions
+noise      = c(20,40,60)                   # noise level
+response   = c("Gesicht", "Haus")          # response
+rt         = c(300:900)                    # responsetime
+
+# data simulation
+D = data.frame(1:n,
+               sample(cond      , n, replace = TRUE),
+               sample(noise     , n, replace = TRUE),
+               sample(response  , n, replace = TRUE),
+               sample(rt        , n, replace = TRUE))
+
+# table visualization
+knitr::kable(D,
+             col.names  = c("Trial", "Stimulus", "Kohärenz", "Antwort", "Reaktionszeit (ms)"),
+             align      = "cccc",
+             "pipe")
+```
+
+\normalsize
+\center
+Unabhängige Variable = (Stimulus, Kohärenz)
+
+Abhängige Variable = (Antwort, Reaktionszeit)
+
+# Motivation
+\textcolor{darkblue}{Neurobiologische Verarbeitung von Sinnesreizen - Neurophysiologiedaten}
+
+\footnotesize
+```{r, echo = F}
+# simulation parameters
+n  = 12                            # number of sample points
+t  = seq(0,n*2,length.out = n+1)   # timepoints
+f  = 0.5                           # frequency parameter
+a  = 20                            # amplitude parameter
+p  = 0.001                         # phase parameter
+
+# data simulation
+D = data.frame(t,
+               rep("Gesicht",n+1),
+               a*sin(f*t + p*rnorm(1)) + rnorm(n+1),
+               a*sin(f*t + p*rnorm(1)) + rnorm(n+1),
+               a*sin(f*t + p*rnorm(1)) + rnorm(n+1),
+               a*sin(f*t + p*rnorm(1)) + rnorm(n+1),
+               a*sin(f*t + p*rnorm(1)) + rnorm(n+1),
+               a*sin(f*t + p*rnorm(1)) + rnorm(n+1))
+
+# table visualization
+knitr::kable(D,
+             col.names  = c("ms",
+                            "Stimulus",
+                            "E1 (O1)",
+                            "E2 (O2)",
+                            "E3 (Cz)",
+                            "E4 (Pz)",
+                            "E5 (AF1)",
+                            "E6 (AF2)"),
+             align      = "ccccccc",
+             "pipe")
+```
+\normalsize
+\center
+Unabhängige Variable =  (Stimulus)
+
+Abhängige Variable = (E1,E2,E3,E4,E5,E6)
+
+
+# Motivation
+\textcolor{darkblue}{Evidenzbasierte Evaluation von Psychotherapieformen bei Depression}
+
+\normalsize
+Welche Therapieform ist bei Depression wirksamer?
+
+```{r, echo = FALSE, out.width = "110%"}
+knitr::include_graphics("1_Abbildungen/mvda_1_klinische_forschung.pdf")
+```
+
+$\rightarrow$ Klinische Psychologie, Klinische Diagnostik
+
+
+# Motivation
+\textcolor{darkblue}{Evidenzbasierte Evaluation von Psychotherapieformen bei Depression}
+
+\footnotesize
+```{r, echo = F}
+# simulation parameters
+n          = 12                            # number of patients
+cond       = c("Online", "Klassisch")      # experimental conditions
+bdi_prae   = 15:50                         # prae PT BDI Score Range
+bdi_pos    = 10:30                         # post PT BDI Score Range
+glu_prae   = 150:500                       # prae PT Glucocorticoid Score Range
+glu_pos    = 100:300                       # post PT Glucocorticoid  Score Range
+
+# data simulation
+D = data.frame(1:n,
+               sample(cond     , n, replace = TRUE),
+               sample(bdi_prae , n, replace = TRUE),
+               sample(bdi_pos  , n, replace = TRUE),
+               sample(glu_prae , n, replace = TRUE),
+               sample(glu_pos , n, replace = TRUE))
+
+# table visualization
+knitr::kable(D,
+             col.names  = c("Patient ID", "Bedingung", 
+                            "Prae BDI", "Post BDI",
+                            "Prae Glukokortikoide", "Post Glukokortikoide"),
+             align      = "cccc",
+             "pipe")
+```
+\center
+\normalsize
+Unabhängige Variable = (Bedingung)
+
+Abhängige Variable = ($\Delta$BDI, $\Delta$Glukokortikoide)
+
+# Motivation
+ 
+\textcolor{darkblue}{Approbationsordnung für Psychotherapeutinnen und Psychotherapeuten (2020)}
+
+\small
+Inhalte, die im Masterstudiengang im Rahmen der hochschulischen Lehre zu vermitteln
+und bei dem Antrag auf Zulassung zur psychotherapeutischen Prüfung nachzuweisen sind
+\vspace{2mm}
+
+\footnotesize
+\noindent \textbf{2. vertiefte Forschungsmethodik}
+
+Die studierenden Personen
+
+a) wenden komplexe und multivariate Erhebungs- und Auswertungsmethoden zur Evaluierung
+und Qualitätssicherung von Interventionen an,
+
+b) nutzen und beurteilen einschlägige Forschungsstudien und deren Ergebnisse für die Psychotherapie
+
+c) planen selbstständig Studien zur Neu- oder Weiterentwicklung der Psychotherapieforschung
+oder der Forschung in angrenzenden Bereichen, führen solche Studien durch, werten sie aus
+und fassen sie zusammen, (...)
+
+\textcolor{blue}{$\quad\Rightarrow$ Masterarbeit}
+
+Zur Vermittlung der Inhalte der vertieften Forschnungsmethodik sind bei der Planung
+der hochschulischen Lehre (...) die folgenden Wissensbereiche abzudecken (...)
+
+a) multivariate Verfahren und Messtheorie
+
+# 
+\setstretch{3}
+\vfill
+\Large
+Motivation
+
+**Datenwissenschaft**
+
+Formalia
+\vfill
+
+# Datenwissenschaft  
+\vfill
+
+\center
+\huge
+\textcolor{darkblue}{Datenwissenschaft}
+\vspace{5mm}
+
+\Large
+Die Kunst, aus Daten Sinn zu generieren
+
+# Datenwissenschaft
+\vspace{2mm}
+```{r, echo = FALSE, out.width = "90%"}
+knitr::include_graphics("1_Abbildungen/mvda_1_datenwissenschaft_komponenten.pdf")
+```
+\vfill
+
+# Datenwissenschaft
+\Large
+Datenwissenschaft ist Datenreduktion
+
+\center
+\vspace{.4cm}
+
+```{r, echo = FALSE, out.width = "80%"}
+knitr::include_graphics("1_Abbildungen/mvda_1_datenreduktion.pdf")
+```
+
+# Datenwissenschaft
+\Large
+Datenwissenschaft ist Naturwissenschaft
+\vspace{3mm}
+
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("1_Abbildungen/mvda_1_wissenschaft.pdf")
+```
+
+# Datenwissenschaft
+\Large
+Datenwissenchaft ist Dateninterpretation
+\center
+\vspace{.5cm}
+
+```{r, echo = FALSE, out.width = "80%"}
+knitr::include_graphics("1_Abbildungen/mvda_1_datenwissenschaftslinse.pdf")
+```
+
+
+# Datenwissenschaft
+\Large
+Terminologie der Datenwissenschaft
+\vspace{.5cm}
+
+\center
+Statistik = Maschinelles Lernen = Künstliche Intelligenz
+\vspace{.5cm}
+
+\small
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{l|l|l}
+
+Statistik					        & Maschinelles Lernen		    & Künstliche Intelligenz		\\\hline
+Probabilistische Modelle	& Deterministische Modelle	& Agenten-basierte Modelle	\\
+Theoretische Analyse		  & Klassifikation			      & Reinforcement learning 		\\
+Optimalitätstheorie 		  & Bayesianische Modelle		  & Symbolik						      \\
+Asymptotische Theorie		  & Anwendung					        & Anwendung						      \\
+Wissenschaftsphilosophie	& Benchmarking				      & Hype							        \\
+\end{tabular}
+
+# Datenwissenschaft
+\vfill
+
+\center
+\huge
+\textcolor{darkblue}{Datenwissenschaft in der Psychologie}
+\vspace{5mm}
+
+\Large
+
+Die Kunst, aus Verhaltens- und Neurophysiologiedaten
+
+psychologischen Sinn zu generieren
+
+
+# 
+\setstretch{3}
+\vfill
+\Large
+Motivation
+
+Datenwissenschaft
+
+**Formalia**
+\vfill
+
+
+# Formalia 
+\textcolor{darkblue}{Modul A1/A3 Forschungsmethoden: Multivariate Verfahren}
+\setstretch{2.2}
+
+* Live Freitags 9-11 Uhr in G40B-326 und 11-13 Uhr G40B-238 
+* Kursmaterialien (Folien, Videos) auf der [\textcolor{darkblue}{Kurswebseite}](https://bit.ly/3Eye26S) 
+* Code auf [\textcolor{darkblue}{Github}](https://github.com/dirk-ostwald/multivariate-datenanalyse-23) 
+* Ankündigen über [\textcolor{darkblue}{Moodle}](https://elearning.ovgu.de/course/view.php?id=13782) 
+* [\textcolor{darkblue}{Link zur vorherigen Iteration des Kurses}](https://bit.ly/3DAw0Dg) 
+* [\textcolor{darkblue}{Link zum Mathematik Grundlagenkurs des BSc Psychologie}](https://bit.ly/3SNh3nR) 
+* [\textcolor{darkblue}{Link zum R Grundlagenkurs des BSc Psychologie}](https://bit.ly/3MvFcwi) 
+
+
+# Formalia {.t}
+\vspace{1mm}
+\textcolor{darkblue}{Modul A1/A3 Forschungsmethoden: Multivariate Verfahren | Themen}
+
+\small
+\center
+\footnotesize
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{lll}
+Datum        & Einheit                          & Thema					                          \\\hline
+14.10.2022   & Grundlagen                       & (1) Einführung 				                  \\
+21.10.2022   & Grundlagen                       & (2) Vektoren             	              \\
+28.10.2022   & Grundlagen                       & (3) Matrizen                            \\
+04.11.2022   & Grundlagen                       & (4) Eigenanalyse                        \\
+11.11.2022   & Grundlagen                       & (5) Wahrscheinlichkeitstheorie          \\
+18.11.2022   & Grundlagen                       & (6) Multivariate Normalverteilungen     \\
+25.11.2022   & Frequentistische Inferenz        & (7) Kanonische Korrelation              \\
+02.12.2022   & Frequentistische Inferenz        & (8) T$^2$-Tests                         \\ 
+09.12.2022   & Frequentistische Inferenz        & (9) MANOVA                              \\
+16.12.2022   & Latente Variablenmodelle         & (10) Hauptkomponentenanalyse            \\
+             & \textcolor{gray}{Weihnachtspause}                                          \\
+13.01.2023   & Latente Variablenmodelle         & (12) Exploratorische Faktorenanalyse    \\
+20.01.2023   & Latente Variablenmodelle         & (13) Lineare Normalverteilungsmodelle   \\
+27.01.2023   & Latente Variablenmodelle         & (14) Konfirmatorische Faktorenanalyse   \\\hline
+Jul 2023     & Klausurtermin                    &                                         \\
+Feb 2024     & Klausurwiederholungstermin
+\end{tabular}
+
+# Formalia 
+\textcolor{darkblue}{Modul A1/A3 Forschungsmethoden: Multivariate Verfahren | Klausurmodalitäten}
+\setstretch{2.2}
+
+* Benotete Multiple Choice Ende Sommersemester 2023 zu Modul A (120 min)  
+* Klausurwiederholungstermin am Ende des Wintersemesters 2023/2024   
+* Klausurtermin und Klausurort gemäß Prüfungsplan des [FNW Prüfungsamtes](https://www.fnw.ovgu.de/Studium/Pr%C3%BCfungsamt.html) 
+* Vorlesungsfolien inklusive Selbstkontrollfragen sind klausurrelevant 
+* Beispielklausurfragen werden im Januar 2022 bereit gestellt 
+* Als weiterführende Literatur bietet sich @rencher_2002 an 
+
+\footnotesize
+
+# Formalia
+\textcolor{darkblue}{Modul A1/A3 Forschungsmethoden: Multivariate Verfahren | Kursformatoptionen}
+\small
+
+(1) \justifying Integrierte Vorlesung zu Theorie und R Anwendung durch den Dozierenden  
+
+(2) Vorlesung zur Theorie durch den Dozierenden, Präsentation der R Anwendung durch Studierende 
+
+(3) Integrierte Vorlesung zu Theorie und R Anwendung durch den Dozierenden, Präsentation von R Übungsaufgaben durch Studierende 
+
+(4) Integrierte Vorlesung zu Theorie und R Anwendung durch den Dozierenden, Präsentation von speziellen Theorie- und R Anwendungsthemen durch Studierende 
+
+Bei Studierendenanteil im Seminar 
+
+* Erfolgreiche Teilnahme abhängig von Qualität der Präsentation 
+* Präsentationsdauer 15 - 20 Minuten, ein Wiederholungstermin 
+* Archivierung RMarkdown Code vor Präsentation 
+* Anwesenheitspflicht, zwei Fehltermine 
+
+\normalsize
+[\textcolor{darkblue}{$\Rightarrow$ Abstimmung Kursformat}](https://elearning.ovgu.de/mod/choice/view.php?id=383582)
+
+[\textcolor{darkblue}{$\Rightarrow$ Umfrage BSc Statistik}](https://elearning.ovgu.de/mod/feedback/view.php?id=383669)
+
+# Formalia
+\vfill
+\Huge
+\center
+Q&A
+\vfill
+
+# Referenzen
+\footnotesize
