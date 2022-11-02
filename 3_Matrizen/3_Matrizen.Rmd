@@ -1,0 +1,2048 @@
+---
+fontsize: 8pt
+bibliography: 3_Referenzen.bib
+citation_package: natbib
+output:
+  beamer_presentation:
+    keep_tex: true
+    includes:
+      in_header: 3_Header.tex
+---
+
+
+```{r, include = F}
+source("3_R_common.R")
+```
+
+#  {.plain}
+\center
+```{r, echo = FALSE, out.width = "20%"}
+knitr::include_graphics("3_Abbildungen/mvda_3_otto.png")
+```
+
+\vspace{2mm}
+
+\Huge
+Multivariate Datenanalyse
+\vspace{6mm}
+
+\Large
+MSc Psychologie WiSe 2022/23
+
+\vspace{6mm}
+\large
+Prof. Dr. Dirk Ostwald
+
+#  {.plain}
+
+\vfill
+\center
+\huge
+\textcolor{black}{(3) Matrizen}
+\vfill
+
+# Definition
+\large
+\textcolor{darkblue}{Motivation}
+\setstretch{2.2}
+
+\normalsize
+Matrizen sind die Worte der Sprache der multivariaten Datenanalyse.
+
+Vektoren sind nur spezielle Matrizen.
+
+Matrizen können als Tabellen der Datenrepräsentation dienen.
+
+Matrizen können lineare Abbildungen repräsentieren.
+
+Matrizen können Vektorräume repräsentieren.
+\vspace{2mm}
+
+\center
+\setstretch{1.2}
+\textcolor{darkblue}{Ein sicherer Umgang mit Matrizen ist für}
+
+\textcolor{darkblue}{das Verständnis multivariater Verfahren unverzichtbar.}
+
+#
+\large
+\setstretch{2}
+\vfill
+Definition
+
+Operationen
+
+Determinanten
+
+Rang
+
+Spezielle Matrizen
+
+Selbstkontrollfragen
+\vfill
+
+#
+\large
+\setstretch{2}
+\vfill
+**Definition**
+
+Operationen
+
+Determinanten
+
+Rang
+
+Spezielle Matrizen
+
+Selbstkontrollfragen
+\vfill
+
+# Definition
+\small
+\begin{definition}[Matrix]
+Eine Matrix ist eine rechteckige Anordnung von Zahlen, die wie folgt bezeichnet
+wird
+\begin{equation}
+A := \begin{pmatrix*}[r]
+a_{11} & a_{12} & \cdots & a_{1m} \\
+a_{21} & a_{22} & \cdots & a_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nm}
+\end{pmatrix*}
+:= {(a_{ij})}_{1\le i\le n,\, 1\le j\le m}.
+\end{equation}
+\end{definition}
+
+\footnotesize
+Bemerkungen
+
+* Matrizen bestehen aus *Zeilen (rows)* und *Spalten (columns)*.
+* Die Matrixeinträge $a_{ij}$ werden mit einem *Zeilenindex* $i$ und einem *Spaltenindex* $j$ indiziert.
+\vspace{2mm}
+
+* Zum Beispiel gilt für
+$A:=\begin{pmatrix*}[r]
+2 & 7 & 5 & 2 \\
+8 & 2 & 5 & 6 \\
+6 & 4 & 0 & 9 \\
+9 & 2 & 1 & 2
+\end{pmatrix*}$,
+dass
+$a_{32} = 4$.
+
+# Definition
+\setstretch{2.3}
+\small
+Bemerkungen (fortgeführt)
+
+\footnotesize
+* Die *Größe* oder *Dimension* einer Matrix ergibt sich aus der Anzahl ihrer Zeilen $n \in \mathbb{N}$ und Spalten $m \in \mathbb{N}$.
+* Matrizen mit $n = m$ heißen *quadratische Matrizen*.
+* In der Folge benötigen wir nur Matrizen mit reellen Einträgen, also $a_{ij} \in \mathbb{R}$  $\forall i = 1,...,n, j = 1,...,m$.
+* Wir nennen die Matrizen mit reellen Einträge *reelle Matrizen*.
+* Die Menge der reellen Matrizen mit $n$ Zeilen und $m$ Spalten bezeichnen wir mit $\mathbb{R}^{n \times m}$
+* Aus dem Ausdruck $A \in \mathbb{R}^{2\times3}$ lesen wir ab, dass $A$ eine reelle Matrix mit zwei Zeilen und drei Spalten ist.
+* Wir identifizieren die Menge $\mathbb{R}^{1 \times 1}$ mit der Menge $\mathbb{R}$.
+* Wir identifizieren die Menge $\mathbb{R}^{n \times 1}$ mit der Menge $\mathbb{R}^n$.
+* Reelle Matrizen mit einer Spalte und $n$ Zeilen sind also dasselbe wie $n$-dimensionale reelle Vektoren.
+
+
+#
+\large
+\setstretch{2}
+\vfill
+Definition
+
+**Operationen**
+
+Determinanten
+
+Rang
+
+Spezielle Matrizen
+
+Selbstkontrollfragen
+\vfill
+
+
+# Operationen
+\textcolor{darkblue}{Matrixoperationen}
+\setstretch{2.5}
+
+\small
+Man kann mit Matrizen rechnen.
+
+In der Folge betrachten wir folgende grundlegende Matrixoperationen
+
+* Addition und Subtraktion von Matrizen gleicher Größe (Matrixaddition und Matrixsubtraktion)
+* Multiplikation einer Matrix mit einem Skalar (Skalarmultiplikation)
+* Vertauschen der Zeilen- und Spaltenanordnung (Matrixtransposition)
+* Multiplikation einer Matrix mit einer passenden zweiten Matrix (Matrixmultiplikation)
+* "Teilen" durch eine Matrix (Matrixinversion)
+
+# Operationen
+\footnotesize
+\begin{definition}[Matrixaddition]
+Es seien $A,B\in \mathbb{R}^{n\times m}$. Dann ist  die \textit{Addition} von $A$
+und $B$ definiert als die Abbildung
+\begin{equation}
++ : \mathbb{R}^{n\times m} \times \mathbb{R}^{n\times m} \to \mathbb{R}^{n \times m}, \,
+(A,B) \mapsto +(A,B) := A + B
+\end{equation}
+mit
+\begin{align}
+\begin{split}
+A + B
+& =
+\begin{pmatrix*}[c]
+a_{11} & a_{12} & \cdots & a_{1m} \\
+a_{21} & a_{22} & \cdots & a_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nm}
+\end{pmatrix*}
++
+\begin{pmatrix*}[c]
+b_{11} & b_{12} & \cdots & b_{1m} \\
+b_{21} & b_{22} & \cdots & b_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+b_{n1} & b_{n2} & \cdots & b_{nm}
+\end{pmatrix*}
+\\
+&
+:=
+\begin{pmatrix*}[c]
+a_{11} + b_{11} & a_{12} + b_{12} & \cdots & a_{1m} + b_{1m} \\
+a_{21} + b_{21} & a_{22} + b_{22} & \cdots & a_{2m} + b_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} + b_{n1} & a_{n2} + b_{n2} & \cdots & a_{nm} + b_{nm}
+\end{pmatrix*}.
+\end{split}
+\end{align}
+\end{definition}
+
+Bemerkungen
+
+* Nur Matrizen identischer Größe können miteinander addiert werden.
+* Die Addition zweier gleich großer Matrizen ist elementweise definiert.
+
+# Operationen
+\footnotesize
+\begin{definition}[Matrixsubtraktion]
+Es seien $A,B\in \mathbb{R}^{n\times m}$. Dann ist  die \textit{Subtraktion} von $A$
+und $B$ definiert als die Abbildung
+\begin{equation}
+- : \mathbb{R}^{n\times m} \times \mathbb{R}^{n\times m} \to \mathbb{R}^{n\times m}, \,
+(A,B) \mapsto -(A,B) := A - B
+\end{equation}
+mit
+\begin{align}
+\begin{split}
+A - B
+& =
+\begin{pmatrix*}[c]
+a_{11} & a_{12} & \cdots & a_{1m} \\
+a_{21} & a_{22} & \cdots & a_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nm}
+\end{pmatrix*}
+-
+\begin{pmatrix*}[c]
+b_{11} & b_{12} & \cdots & b_{1m} \\
+b_{21} & b_{22} & \cdots & b_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+b_{n1} & b_{n2} & \cdots & b_{nm}
+\end{pmatrix*}
+\\
+&
+:=
+\begin{pmatrix*}[c]
+a_{11} - b_{11} & a_{12} - b_{12} & \cdots & a_{1m} - b_{1m} \\
+a_{21} - b_{21} & a_{22} - b_{22} & \cdots & a_{2m} - b_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} - b_{n1} & a_{n2} - b_{n2} & \cdots & a_{nm} - b_{nm}
+\end{pmatrix*}.
+\end{split}
+\end{align}
+\end{definition}
+
+Bemerkungen
+
+* Nur Matrizen identischer Größe können voneinander subtrahiert werden.
+* Die Subktration zweier gleich großer Matrizen ist elementweise definiert.
+
+# Operationen
+\small
+Beispiel
+
+\footnotesize
+Es seien $A,B\in \mathbb{R}^{2\times 3}$ definiert als
+\begin{equation}
+A:=\begin{pmatrix*}[r]
+2 & -3 & 0\\
+1 &  6 & 5\\
+\end{pmatrix*}
+\mbox{ und }
+B := \begin{pmatrix*}[r]
+ 4 & 1 & 0\\
+-4 & 2 & 0\\
+\end{pmatrix*}.
+\end{equation}
+Da $A$ und $B$ gleich groß sind, können wir sie addieren
+\begin{align}
+\begin{split}
+C
+= A+B
+& =
+\begin{pmatrix*}[r]
+2 & -3 & 0\\
+1 &  6 & 5\\
+\end{pmatrix*}
++
+\begin{pmatrix*}[r]
+ 4 & 1 & 0\\
+-4 & 2 & 0\\
+\end{pmatrix*}\\
+& =
+\begin{pmatrix*}[r]
+2 + 4 & -3 + 1 & 0 + 0\\
+1 - 4 &  6 + 2 & 5 + 0\\
+\end{pmatrix*}\\
+& =
+\begin{pmatrix*}[r]
+6 & -2 & 0\\
+-3 &  8 & 5 \\
+\end{pmatrix*}
+\end{split}
+\end{align}
+und voneinander subtrahieren
+\begin{align}
+\begin{split}
+D
+= A-B
+& =
+\begin{pmatrix*}[r]
+2 & -3 & 0\\
+1 &  6 & 5\\
+\end{pmatrix*}
+-
+\begin{pmatrix*}[r]
+ 4 & 1 & 0\\
+-4 & 2 & 0\\
+\end{pmatrix*}\\
+& =
+\begin{pmatrix*}[r]
+2 - 4 & -3 - 1 & 0 - 0\\
+1 + 4 &  6 - 2 & 5 - 0\\
+\end{pmatrix*}\\
+& =
+\begin{pmatrix*}[r]
+-2 & -4 & 0\\
+5 &  4 & 5 \\
+\end{pmatrix*}.
+\end{split}
+\end{align}
+
+
+# Operationen
+\small
+Beispiel
+\vspace{5mm}
+
+\footnotesize
+```{r}
+# Spaltenweise Definition von A (R default)
+A = matrix(c(2,1,-3,6,0,5), nrow = 2)
+print(A)
+```
+
+\vspace{5mm}
+
+```{r}
+# Zeilenweise Definition von B
+B = matrix(c(4,1,0,-4,2,0), nrow = 2, byrow = TRUE)
+print(B)
+```
+
+# Operationen
+\small
+Beispiel
+\vspace{5mm}
+
+\footnotesize
+```{r}
+# Addition
+C = A + B
+print(C)
+```
+
+\vspace{5mm}
+
+```{r}
+# Subtraktion
+D = A - B
+print(D)
+```
+
+
+# Operationen
+\footnotesize
+\begin{definition}[Skalarmultiplikation]
+Es sei $c \in \mathbb{R}$ ein Skalar und $A \in \mathbb{R}^{n\times m}$. Dann
+ist die \textit{Skalarmultiplikation} von $c$ und $A$ definiert als die Abbildung
+\begin{equation}
+\cdot : \mathbb{R} \times \mathbb{R}^{n\times m} \to \mathbb{R}^{n\times m}, \,
+(c,A) \mapsto \cdot (c,A) := cA
+\end{equation}
+mit
+\begin{align}
+\begin{split}
+cA
+=
+c
+\begin{pmatrix*}[c]
+a_{11} & a_{12} & \cdots & a_{1m} \\
+a_{21} & a_{22} & \cdots & a_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nm}
+\end{pmatrix*}
+:=
+\begin{pmatrix*}[c]
+ca_{11} & ca_{12} & \cdots & ca_{1m}  \\
+ca_{21} & ca_{22} & \cdots & ca_{2m}  \\
+\vdots  & \vdots  & \ddots & \vdots    \\
+ca_{n1} & ca_{n2} & \cdots & ca_{nm}
+\end{pmatrix*}.
+\end{split}
+\end{align}
+\end{definition}
+
+Bemerkungen
+
+* Die Skalarmultiplikation ist elementweise definiert.
+
+
+# Operationen
+\small
+Beispiel
+
+\footnotesize
+Es seiein $c:=-3$ und $A\in \mathbb{R}^{4\times 3}$ definiert als
+\begin{equation}
+A := \begin{pmatrix*}[r]
+3 & 1 & 1\\
+5 & 2 & 5\\
+2 & 7 & 1\\
+3 & 4 & 2
+\end{pmatrix*}.
+\end{equation}
+Dann ergibt  sich
+\begin{align}
+\begin{split}
+B :=
+cA
+= -3\begin{pmatrix*}[r]
+3 & 1 & 1\\
+5 & 2 & 5\\
+2 & 7 & 1\\
+3 & 4 & 2
+\end{pmatrix*}
+= \begin{pmatrix*}[r]
+-3\cdot3 & -3\cdot1 & -3\cdot1\\
+-3\cdot5 & -3\cdot2 & -3\cdot5\\
+-3\cdot2 & -3\cdot7 & -3\cdot1\\
+-3\cdot3 & -3\cdot4 & -3\cdot2
+\end{pmatrix*}
+= \begin{pmatrix*}[r]
+-9  &  -3 & -3  \\
+-15 &  -6 & -15 \\
+-6  & -21 & -3  \\
+-9  & -12 & -6
+\end{pmatrix*}.
+\end{split}
+\end{align}
+
+# Operationen
+\small
+Beispiel
+\vspace{5mm}
+
+\footnotesize
+```{r}
+# Definitionen
+A = matrix(c(3,1,1,
+             5,2,5,
+             2,7,1,
+             3,4,2),
+           nrow = 4,
+           byrow = TRUE)
+c = -3
+
+# Skalarmultiplikation
+B = c*A
+print(B)
+```
+
+
+# Operationen
+\footnotesize
+
+\begin{theorem}[Vektorraum $\mathbb{R}^{n \times m}$]
+\justifying
+\normalfont
+Das Tripel $(\mathbb{R}^{n \times m}, +, \cdot)$ mit der oben definierten
+Matrixaddition und Skalarmultiplikation ist ein Vektorraum. Insbesondere gelten
+also für $A,B,C\in \mathbb{R}^{n \times m}$ und $r,s,t\in \mathbb{R}$ folgende
+Rechenregeln:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{ll}
+(1) Kommutativität der Addition
+& $A + B = B + A$
+\\
+(2) Assoziativität der Addition
+& $(A + B) + C = A + (B + C)$
+\\
+(3) Existenz eines neutralen Elements der Addition
+& $\exists\, 0 \in \mathbb{R}^{n \times m}$ mit $A + 0 = 0 + A = A$.
+\\
+(4) Existenz inverser Elemente der Addition
+& $\forall A \, \exists\, -A $ mit  $A + (-A) = 0$.
+\\
+(5) Existenz eines neutralen Elements der Skalarmultiplikation
+& $\exists\, 1 \in \mathbb{R}$ mit $1 \cdot A = A$.
+\\
+(6) Assoziativität der Skalarmultiplikation
+& $r \cdot (s \cdot t) = (r \cdot s)\cdot t$.
+\\
+(7) Distributivität hinsichtlich der Matrixaddition
+& $r\cdot (A + B) = r\cdot A + r\cdot B$.
+\\
+(8) Distributivität hinsichtlich der Skalaraddition
+& $(r + s)\cdot A = r\cdot A + s\cdot A$.
+\end{tabular}
+\end{center}
+\end{theorem}
+
+Bemerkungen
+
+* Wir verzichten auf einen Beweis.
+* Der Beweis ergibt sich mit dem  elementweisen Charakter von $+,-,\cdot$ und den Rechenregeln in $(\mathbb{R},+,\cdot)$.
+* Das neutrale Element der Addition heißt *Nullmatrix*; wir schreiben $0_{nm} := (0)_{1\le i \le n, 1 \le j \le m}$ mit $0\in \mathbb{R}$.
+* Die inversen Elemente der Addition sind durch $-A := (-a_{ij})_{1\le i \le n, 1 \le j \le m}$ gegeben.
+* Das neutrale Element der Skalarmultiplikation ist $1 \in \mathbb{R}$.
+
+
+# Operationen
+\footnotesize
+\begin{definition}[Matrixtransposition]
+Es sei $A \in \mathbb{R}^{n\times m}$. Dann ist  die \textit{Transposition}
+von $A$ definiert als die Abbildung
+\begin{equation}
+\cdot^{T} : \mathbb{R}^{n\times m} \to \mathbb{R}^{m \times n}, \,
+A \mapsto \cdot^{T}(A) := A^T
+\end{equation}
+mit
+\begin{align}
+\begin{split}
+A^T
+=
+\begin{pmatrix*}[c]
+a_{11} & a_{12} & \cdots & a_{1m} \\
+a_{21} & a_{22} & \cdots & a_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nm}
+\end{pmatrix*}^T
+:=
+\begin{pmatrix*}[c]
+a_{11} & a_{21} & \cdots & a_{n1} \\
+a_{12} & a_{22} & \cdots & a_{n2} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{1m} & a_{2m} & \cdots & a_{mn}
+\end{pmatrix*}
+\end{split}
+\end{align}
+\end{definition}
+
+Bemerkungen
+
+* \justifying Die Matrixtransposition "vertauscht" Zeilen und Spalten.
+* Für $A \in \mathbb{R}^{n \times m}$ gilt immer $A^T \in \mathbb{R}^{m \times n}$.
+* Für $A \in \mathbb{R}^{1 \times 1}$ gilt immer $A^T = A$.
+* Es gilt $\left(A^T\right)^T = A$.
+* Es gilt $\left(a_{ii}\right)_{1 \le i \le \mbox{min}(n,m)} = \left(a_{ii}\right)^T_{1 \le i \le \mbox{min}(n,m)}$
+* Matrixelemente auf der Hauptdiagonalen einer Matrix bleiben bei Transposition also unberührt.
+
+
+# Operationen
+\small
+Beispiel
+
+Es sei $A \in \mathbb{R}^{2 \times 3}$ definiert durch
+\begin{equation}
+A:=\begin{pmatrix*}[r]
+2 & 3 & 0 \\
+1 & 6 & 5 \\
+\end{pmatrix*},
+\end{equation}
+Dann gilt $A^T \in \mathbb{R}^{3 \times 2}$ und speziell
+\begin{equation}
+A^{T} :=
+\begin{pmatrix*}[r]
+2  & 1 \\
+3  & 6 \\
+0  & 5 \\
+\end{pmatrix*}.
+\end{equation}
+Weiterhin gilt offenbar $\min(m,n) = 2$ und folglich
+\begin{equation}
+(a_{11}) = \left(a_{11}\right)^T
+\mbox{ und }
+(a_{22}) = \left(a_{22}\right)^T.
+\end{equation}
+
+# Operationen
+\small
+Beispiel
+\vspace{5mm}
+
+\footnotesize
+```{r}
+# Definition
+A = matrix(c(2,3,0,
+             1,6,5),
+           nrow = 2,
+           byrow = TRUE)
+print(A)
+```
+
+\vspace{5mm}
+
+\footnotesize
+```{r}
+# Transposition
+AT = t(A)
+print(AT)
+
+```
+
+
+# Operationen
+\footnotesize
+\setstretch{1.7}
+\begin{definition}[Matrixmultiplikation]
+Es seien $A\in \mathbb{R}^{n \times m}$ und $B \in \mathbb{R}^{m \times k}$. Dann
+ist  die \textit{Matrixmultiplikation} von $A$ und $B$ definiert als die Abbildung
+\begin{equation}
+\cdot : \mathbb{R}^{n\times m} \times \mathbb{R}^{m\times k} \to \mathbb{R}^{n \times k}, \,
+(A,B) \mapsto \cdot(A,B) := AB
+\end{equation}
+mit
+\begin{align}
+\begin{split}
+AB
+& =
+\begin{pmatrix*}[c]
+a_{11} & a_{12} & \cdots & a_{1m} \\
+a_{21} & a_{22} & \cdots & a_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nm}
+\end{pmatrix*}
+\begin{pmatrix*}[c]
+b_{11} & b_{12} & \cdots & b_{1k} \\
+b_{21} & b_{22} & \cdots & b_{2k} \\
+\vdots & \vdots & \ddots & \vdots \\
+b_{m1} & b_{m2} & \cdots & b_{mk}
+\end{pmatrix*}
+\\
+&
+:=
+\begin{pmatrix*}[c]
+\sum_{i=1}^m a_{1i}b_{i1} & \sum_{i=1}^m a_{1i}b_{i2} & \cdots & \sum_{i=1}^m a_{1i}b_{ik}  \\
+\sum_{i=1}^m a_{2i}b_{i1} & \sum_{i=1}^m a_{2i}b_{i2} & \cdots & \sum_{i=1}^m a_{2i}b_{ik}  \\
+\vdots                    & \vdots                    & \ddots & \vdots                     \\
+\sum_{i=1}^m a_{ni}b_{i1} & \sum_{i=1}^m a_{ni}b_{i2} & \cdots & \sum_{i=1}^m a_{ni}b_{ik}
+\end{pmatrix*}
+\end{split}
+\end{align}
+\end{definition}
+
+# Operationen
+\small
+Bemerkungen
+\setstretch{1.7}
+\small
+\begin{itemize}
+\justifying
+\item Das Matrixprodukt $AB$ ist nur dann definiert, wenn $A$ genau so viele Spalten hat wie $B$ Zeilen.
+\item Informell gilt für die beteiligten Matrixgrößen immer $(n \times m)(m \times k) = (n \times k)$.
+\item In $AB$ ist $(AB)_{ij}$ die Summe der multiplizierten $i$ten Zeilen von $A$ und $j$ten Spalten von $B$.
+\item Zum Berechnen von $(AB)_{ij}$ für $1 \le i \le n, 1 \le j \le k$ geht man also wie folgt vor:
+\begin{enumerate}
+\begin{small}
+\justifying
+\item Man legt in Gedanken die Tranposition der $i$ten Zeile von $A$ über die $j$te Spalte von $B$.
+\item Weil $A$ genau $m$ Spalten hat und $B$ genau $m$ Zeilen hat, gibt es zu jedem Element der Zeile aus $A$
+ein korrespondierendes Element in der Spalte von $B$.
+\item Man multipliziert die korrespondierenden Elemente miteinander.
+\item Die Summe dieser Produkte ist dann der Eintrag mit Index $ij$ in $AB$.
+\end{small}
+\end{enumerate}
+\item Die Multiplikation von Matrizen ist im Allgemeinen nicht kommutativ (also meist $AB \neq BA$).
+\end{itemize}
+
+
+# Operationen
+Beispiel
+
+\small
+\justifying
+$A\in \mathbb{R}^{2\times 3}$ und $B\in \mathbb{R}^{3\times 2}$ seien definiert als
+\begin{equation}
+A := \begin{pmatrix*}[r]
+2 & -3 &  0   \\
+1 &  6 &  5
+\end{pmatrix*}
+\mbox{ und }
+B := \begin{pmatrix*}[r]
+ 4 & 2  \\
+-1 & 0  \\
+ 1 & 3
+\end{pmatrix*}.
+\end{equation}
+Wir wollen $C := AB$ und $D := BA$ berechnen.
+
+Mit $n = 2, m = 3$ und $k = 2$ wissen wir schon, dass $C \in \mathbb{R}^{2 \times 2}$ und $D \in \mathbb{R}^{3 \times 3}$, weil
+\begin{equation}
+(2 \times 3)(3 \times 2) = (2 \times 2)
+\end{equation}
+und
+\begin{equation}
+(3 \times 2)(2 \times 3) = (3 \times 3)
+\end{equation}
+Es gilt hier also sicher $AB \neq BA$.
+
+# Operationen
+Beispiel (fortgeführt)
+
+\small
+\justifying
+Es ergibt sich zum einen
+\begin{align}
+\begin{split}
+C
+& = AB
+\\
+& = \begin{pmatrix*}[r]
+2 & -3 & 0 \\
+1 &  6 & 5 \\
+\end{pmatrix*}
+\begin{pmatrix*}[r]
+4  & 2 \\
+-1 & 0 \\
+1  & 3
+\end{pmatrix*}
+\\
+& =
+\begin{pmatrix*}[r]
+2\cdot 4 + (-3)\cdot (-1) + 0\cdot 1 & 2\cdot 2 + (-3)\cdot 0 + 0\cdot 3 \\
+1\cdot 4 +    6\cdot (-1) + 5\cdot 1 & 1\cdot 2 +  6\cdot 0 + 5\cdot 3 \\
+\end{pmatrix*}
+\\
+& =
+\begin{pmatrix*}[r]
+8 + 3 + 0 & 4 + 0 + 0 \\
+4 - 6 + 5 & 2 + 0 + 15 \\
+\end{pmatrix*}
+\\
+& =
+\begin{pmatrix*}[r]
+11 & 4 \\
+3 & 17 \\
+\end{pmatrix*}.
+\end{split}
+\end{align}
+
+# Operationen
+Beispiel (fortgeführt)
+\vspace{2mm}
+
+\footnotesize
+
+```{r}
+# Definitionen
+A = matrix(c(2,-3,0,
+             1, 6,5),
+           nrow  = 2,
+           byrow = TRUE)
+B = matrix(c( 4,2,
+             -1,0,
+              1,3),
+           nrow  = 3,
+           byrow = TRUE)
+
+# Matrixmultiplikation
+C = A %*% B
+print(C)
+
+```
+
+
+# Operationen
+Beispiel (fortgeführt)
+
+\small
+\justifying
+Es ergibt sich zum anderen
+\begin{align}
+\begin{split}
+D
+& = BA
+\\
+& =
+\begin{pmatrix*}[r]
+4  & 2 \\
+-1 & 0 \\
+1  & 3
+\end{pmatrix*}
+\begin{pmatrix*}[r]
+2 & -3 & 0 \\
+1 &  6 & 5 \\
+\end{pmatrix*}
+\\
+& =
+\begin{pmatrix*}[r]
+  4    \cdot   2  + 2 \cdot 1
+& 4    \cdot (-3) + 2 \cdot 6
+& 4    \cdot   0  + 2 \cdot 5
+\\
+  (-1) \cdot  2  + 0 \cdot 1
+& (-1) \cdot(-3) + 0 \cdot 6
+& (-1) \cdot  0  + 0 \cdot 5
+\\
+  1    \cdot  2  + 3 \cdot 1
+& 1    \cdot(-3) + 3 \cdot 6
+& 1    \cdot  0  + 3 \cdot 5
+\end{pmatrix*}
+\\
+& =
+\begin{pmatrix*}[r]
+    8 + 2
+& -12 + 12
+&   0 + 5
+\\
+   -2 + 0
+&   3 + 0
+&   0 + 0
+\\
+    2 + 3
+&  -3 + 18
+&   0 + 15
+\end{pmatrix*}
+\\
+& =
+\begin{pmatrix*}[r]
+  10
+&  0
+& 10
+\\
+  -2
+&  3
+&  0
+\\
+   5
+& 15
+& 15
+\\
+\end{pmatrix*}
+\end{split}
+\end{align}
+
+# Operationen
+Beispiel (fortgeführt)
+\vspace{1mm}
+
+\setstretch{1.2}
+\footnotesize
+
+```{r}
+# Definitionen
+A = matrix(c(2,-3,0,
+             1, 6,5),
+           nrow  = 2,
+           byrow = TRUE)
+B = matrix(c( 4,2,
+             -1,0,
+              1,3),
+           nrow  = 3,
+           byrow = TRUE)
+
+# Matrixmultiplikation
+D = B %*% A
+print(D)
+
+```
+
+\vspace{1mm}
+
+```{r, error = TRUE}
+# Beispiel für eine undefinierte Matrixmultipliation
+E = t(A) %*% B      # (3 x 2)(3 x 2)
+```
+
+# Operationen
+\setstretch{1.2}
+\footnotesize
+\begin{theorem}[Matrixmultiplikation und Skalarprodukt]
+\normalfont
+\justifying
+Es seien $x,y \in \mathbb{R}^n$. Dann gilt
+\begin{equation}
+\langle x,y \rangle = x^Ty.
+\end{equation}
+Weiterhin seien für $A \in \mathbb{R}^{n\times m}$ für $i = 1,...,n$
+\begin{equation}
+\bar{a}_i := (a_{ji})_{1 \le j \le m} \in \mathbb{R}^m
+\end{equation}
+die Spalten von $A^T$ und für $B \in \mathbb{R}^{m \times k}$ für $i = 1,...,k$
+\begin{equation}
+\bar{b}_j := (b_{ij})_{1 \le j \le m} \in \mathbb{R}^m
+\end{equation}
+die Spalten von $B$, also
+\begin{equation}
+A^T =
+\begin{pmatrix*}[r]
+\bar{a}_1 & \bar{a}_2 & \cdots & \bar{a}_n
+\end{pmatrix*}
+\in \mathbb{R}^{m \times n}
+\mbox{ und }
+B =
+\begin{pmatrix*}[r]
+\bar{b}_1 & \bar{b}_2 & \cdots & \bar{b}_k
+\end{pmatrix*}
+\in \mathbb{R}^{m \times k}.
+\end{equation}
+Dann gilt
+\begin{equation}
+AB = \left(\langle \bar{a}_i,\bar{b}_j \rangle \right)_{1 \le i \le n, 1 \le j \le k}
+\end{equation}
+\end{theorem}
+
+\footnotesize
+Bemerkungen
+
+* Der Eintrag $(AB)_{ij}$ enstpricht dem Skalarprodukt von $i$ter Spalte von $A^T$ und $j$ter Spalte von $B$.
+* Die erste Aussage folgt mit der Identifikation von $\mathbb{R}^{n} = \mathbb{R}^{n \times 1}$
+* Wir verzichten auf einen ausführlichen Beweis.
+
+# Operationen
+\small
+\textcolor{darkblue}{Motivation für Begriff der Inversen einer quadratischen Matrix}
+\setstretch{2}
+\footnotesize
+
+* Es seien $A\in \mathbb{R}^{n \times n}, x \in \mathbb{R}^n$ und $b \in \mathbb{R}^n$, $A$ und $b$ seien als bekannt vorausgesetzt, $x$ sei unbekannt.
+* Zum Beispiel sei $A := \begin{pmatrix*}[r] 1 & 2 \\ 3 & 4 \end{pmatrix*}$ und $b := \begin{pmatrix*}[r]  5 \\ 11 \end{pmatrix*}$
+* In diesem Fall gilt
+$Ax = b
+\Leftrightarrow
+\begin{pmatrix*}[r] 1 & 2 \\ 3 & 4 \end{pmatrix*} \begin{pmatrix*}[r] x_1 \\ x_2 \end{pmatrix*} = \begin{pmatrix*}[r]  5 \\ 11 \end{pmatrix*}
+\Leftrightarrow
+\begin{matrix}
+1x_1 + 2x_2 & = 5 \\
+3x_1 + 4x_2 & = 11
+\end{matrix}$
+* Wir haben also ein *lineares Gleichungssystem (LGS)* mit zwei Gleichungen und zwei Unbekannten.
+* Wir stellen uns vor, dass wissen möchten, für welche(s) $x$ das LGS erfüllt ist.
+* Wären $A = a \in \mathbb{R}$, $x \in \mathbb{R}$ und $b \in \mathbb{R}$, also $ax = b$
+gegeben so würden mit dem *multiplikativem Inversen* von $a$ multiplizieren, also dem
+Wert, der mit $a$ multipliziert $1$ ergibt und durch $a^{-1} = \frac{1}{a}$ gegeben ist.
+* Dann würde nämlich gelten
+$ax = b \Leftrightarrow a^{-1}ax = a^{-1}b \Leftrightarrow 1 \cdot x = a^{-1}b \Leftrightarrow x = \frac{b}{a}$
+* Konkret etwa
+$2x = 6 \Leftrightarrow 2^{-1} 2x = 2^{-1}6 \Leftrightarrow \frac{1}{2}2x = \frac{1}{2}6 \Leftrightarrow x = 3$.
+* Analog möchte mit dem *multiplikativen Inversen* $A^{-1}$ von $A$ multiplizieren können, sodass "$A^{-1}A = 1$".
+* Dann hätte man nämlich $Ax = b \Leftrightarrow A^{-1}Ax = A^{-1}b \Leftrightarrow x = A^{-1}b$
+* Die Idee des multiplikativen Inversen wird im folgenden als *Inverse eine quadratischen Matrix* formalisiert.
+
+# Operationen
+\footnotesize
+\setstretch{1.2}
+\begin{definition}[Einheitsmatrix]
+Die Matrix
+\begin{equation}
+I_n
+:= (a_{ij})_{1\le i \le n, 1 \le j \le n}  \in \mathbb{R}^{n \times n}
+:=
+\begin{pmatrix*}[r]
+1      & 0      & \cdots & 0       \\
+0      & 1      & \cdots & 0       \\
+\vdots & \vdots & \ddots & \vdots  \\
+0      & 0      & \cdots & 1       \\
+\end{pmatrix*}
+\end{equation}
+mit $a_{ij} = 1$ für $i = j$  und  $a_{ij} = 0$ für  $i \neq j$ heißt
+\textit{$n$-dimensionale Einheitsmatrix}.
+\end{definition}
+* $I_n$ wird in R mit dem Befehl `diag(n)` erzeugt.
+\begin{theorem}[Neutrales Element der Matrixmultiplikation]
+\justifying
+\normalfont
+$I_n$ ist das neutrale Element der Matrixmultiplikation, d.h. es gilt für $A \in \mathbb{R}^{n \times m}$,
+dass
+\begin{equation}
+I_nA = A \mbox{ und } AI_m = A.
+\end{equation}
+\end{theorem}
+
+\underline{Beweis}
+
+Es sei $B = (b_{ij}) = I_nA \in \mathbb{R}^{n\times m}$. Dann gilt für alle $1 \le i \le n$
+und alle $1 \le j \le n$
+\begin{equation}
+d_{ij}
+= 0 \cdot a_{1j}
++ 0 \cdot a_{2j}
++ \cdots
++ 0 \cdot a_{i-1,j}
++ 1 \cdot a_{ij} +
++ \cdots
++ 0 \cdot a_{i+1,j}
++ 0 \cdot a_{nj}
+= a_{ij}
+\end{equation}
+und analog für $AI_m$.
+$\hfill \Box$
+
+# Operationen
+\small
+\begin{definition}[Invertierbare Matrix und inverse Matrix]
+\justifying
+Eine quadratische Matrix $A \in \mathbb{R}^{n \times n}$ heißt \textit{invertierbar}, wenn es eine
+quadratische Matrix $A^{-1} \in \mathbb{R}^{n \times n}$ gibt, so dass
+\begin{equation}
+A^{-1}A = AA^{-1} = I_n
+\end{equation}
+ist. Die Matrix $A^{-1}$ heißt die \textit{inverse Matrix von $A$}.
+\end{definition}
+
+\footnotesize
+Bemerkungen
+
+* Invertierbarkeit und inverse Matrizen beziehen sich nur auf quadratische Matrizen.
+* Inverse Matrizen heißen auch einfach *Inverse*.
+* Quadratische Matrizen können, müssen aber nicht invertierbar sein.
+* Nicht invertierbare Matrizen nennt man *singuläre* Matrizen
+* Für $A = a \in \mathbb{R}^{1 \times 1}$ gilt $A^{-1} = \frac{1}{a}$.
+* Die Definition sagt nur aus, was eine inverse Matrix ist, nicht wie man sie berechnet.
+
+
+# Operationen
+\small
+Beispiel für eine invertierbare Matrix
+\footnotesize
+
+Die Matrix
+$A = \begin{pmatrix*}[r] 2.0 & 1.0 \\ 3.0 & 4.0 \end{pmatrix*}$
+ist invertierbar mit inverser Matrix
+$A^{-1} = \begin{pmatrix*}[r] 0.8 & -0.2 \\  -0.6 & 0.4 \end{pmatrix*}$,
+denn
+\begin{equation}
+\begin{pmatrix*}[r] 2.0 &  1.0 \\   3.0 & 4.0 \end{pmatrix*}
+\begin{pmatrix*}[r] 0.8 & -0.2 \\  -0.6 & 0.4 \end{pmatrix*}
+=
+\begin{pmatrix*}[r] 1 & 0 \\ 0 & 1 \end{pmatrix*}
+=
+\begin{pmatrix*}[r] 0.8 & -0.2  \\  -0.6 & 0.4 \end{pmatrix*}
+\begin{pmatrix*}[r] 2.0 &  1.0  \\   3.0 & 4.0 \end{pmatrix*},
+\end{equation}
+wovon man sich durch Nachrechnen überzeugt.
+\vspace{3mm}
+
+\small
+Beispiel für eine nicht-invertierbare Matrix
+\footnotesize
+
+Die Matrix $B = \begin{pmatrix*}[r] 1 & 0 \\ 0 & 0 \end{pmatrix*}$ ist nicht invertierbar,
+denn wäre $B$ invertierbar, dann gäbe es $\begin{pmatrix*}[r] a & b \\ c & d \end{pmatrix*}$
+mit
+\begin{equation}
+\begin{pmatrix*}[r] 1 & 0 \\ 0 & 0 \end{pmatrix*}
+\begin{pmatrix*}[r] a & b \\ c & d \end{pmatrix*}
+=
+\begin{pmatrix*}[r] a & b \\ 0 & 0 \end{pmatrix*}
+=
+\begin{pmatrix*}[r] 1 & 0 \\ 0 & 1 \end{pmatrix*}
+\end{equation}
+Das würde aber bedeuten, dass $0 = 1$ in $\mathbb{R}$ und das ist ein Widerspruch.
+Also kann $B$ nicht invertierbar sein.
+
+# Operationen
+\setstretch{2.3}
+\textcolor{darkblue}{Berechnen inverser Matrizen}
+
+\small
+* $2 \times 2$ bis etwa $5 \times 5$ Matrizen kann man prinzipiell per Hand invertieren.
+* Dazu lernt man im BSc Mathematik verschiedene Verfahren.
+* Wir verzichten auf eine Einführung in die Matrizeninvertierung per Hand.
+* Ein kurzes (30 min) Erklärvideo [findet sich hier](https://www.youtube.com/watch?v=9TD6gXfQDkw&t=7s).
+* In der Anwendung werden Matrizen standardmäßig numerisch invertiert.
+* Matrixinversion ist ein weites Feld in der numerischen Mathematik.
+* Es gibt sehr viele Algorithmen zur Invertierung invertierbarer Matrizen.
+* Elegant berechnet man inverse Matrizen in R zum Beispiel mit dem Paket `matlib`.
+
+# Operationen
+\textcolor{darkblue}{Berechnen inverser Matrizen}
+\footnotesize
+\vspace{2mm}
+\setstretch{1.2}
+
+```{r, eval = F}
+# Einmalige Installation des R Pakets matlib
+install.packages("matlib")
+```
+\vspace{2mm}
+
+```{r}
+# Laden der matlib Funktionen
+library(matlib)
+
+# Definition
+A = matrix(c(2,1,
+             3,4),
+           nrow  = 2,
+           byrow = TRUE)
+
+# Berechnen von A^{-1}
+inv(A)
+```
+
+# Operationen
+\textcolor{darkblue}{Berechnen inverser Matrizen}
+\footnotesize
+\vspace{2mm}
+\setstretch{1.2}
+
+```{r}
+print(inv(A) %*% A)
+```
+\vspace{2mm}
+
+```{r}
+print(A %*% inv(A))
+```
+\vspace{2mm}
+
+```{r, error = TRUE}
+
+# Nicht-invertierbare Matrizen sind auch numerisch nicht-invertierbar (singulär)
+B = matrix(c(1,0,
+             0,0),
+           nrow  = 2,
+           byrow = 2)
+inv(B)
+```
+
+#
+\large
+\setstretch{2}
+\vfill
+Definition
+
+Operationen
+
+**Determinanten**
+
+Rang
+
+Spezielle Matrizen
+
+Selbstkontrollfragen
+\vfill
+
+# Determinanten
+\setstretch{1.2}
+\footnotesize
+\begin{definition}[Determinante]
+\justifying
+Für $A = (a_{ij})_{1 \le i,j \le n} \in \mathbb{R}^{n \times n}$ mit $n>1$ sei
+$A_{ij} \in \mathbb{R}^{n-1 \times n-1}$ die Matrix, die aus $A$ durch
+Entfernen der $i$ten Zeile und der $j$ten Spalte entsteht.
+Dann heißt die Zahl
+\begin{align}
+\det(A) & := a_{11} \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad   \mbox{ für } n = 1\\
+\det(A) & := \sum_{j = 1}^n a_{1j}(-1)^{1+j} \det\left(A_{1j}\right)               \mbox{ für } n > 1
+\end{align}
+die \textit{Determinante von $A$}.
+\end{definition}
+
+\footnotesize
+Bemerkungen
+
+* Für
+\begin{equation}
+A :=
+\begin{pmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9 \\
+\end{pmatrix}
+\end{equation}
+ergeben sich zum Beispiel
+\begin{equation}
+A_{11}
+=
+\begin{pmatrix}
+5 & 6 \\
+8 & 9 \\
+\end{pmatrix},
+A_{12}
+=
+\begin{pmatrix}
+4 & 6 \\
+7 & 9 \\
+\end{pmatrix},
+A_{21}
+=
+\begin{pmatrix}
+2 & 3 \\
+8 & 9 \\
+\end{pmatrix},
+A_{22}
+=
+\begin{pmatrix}
+1 & 3 \\
+7 & 9 \\
+\end{pmatrix}
+\end{equation}
+* Determinanten sind  nichtlineare  Abbildungen der Form $\det: \mathbb{R}^{n \times n} \to \mathbb{R}, A \mapsto \mbox{det}(A)$
+
+# Determinanten
+\footnotesize
+\setstretch{1.2}
+\begin{theorem}[Determinanten von 2 $\times 2$ und $3 \times 3$ Matrizen]
+\normalfont
+(1) Es sei $A = (a_{ij})_{1 \le i,j \le 2} \in \mathbb{R}^{2 \times 2}$. Dann gilt
+\begin{equation}
+\det(A)
+= a_{11}a_{22} - a_{12}a_{21}.
+\end{equation}
+(2) Es sei $A = (a_{ij})_{1 \le i,j \le 3} \in \mathbb{R}^{3 \times 3}$. Dann gilt
+\begin{align}
+\begin{split}
+\det(A)
+= a_{11}a_{22}a_{33} + a_{12}a_{23}a_{31} + a_{13}a_{21}a_{32}
+- a_{12}a_{21}a_{33} - a_{11}a_{23}a_{32} - a_{13}a_{22}a_{31}.
+\end{split}
+\end{align}
+\end{theorem}
+
+Bemerkungen
+
+* Für $2 \times 2$ und $3 \times 3$ Matrizen (und nur für diese) gilt die *Sarrusche Merkregel*
+\begin{center}
+``Summe der Produkte auf den Diagonalen minus Summe der Produkte auf den Gegendiagonalen''
+\end{center}
+* Bei $3 \times 3$ Matrizen bezieht sich die Merkregel auf das Schema
+\begin{equation}
+\begin{pmatrix}
+a_{11} & a_{12} & a_{13} & \vert & a_{11} & a_{12} \\
+a_{21} & a_{22} & a_{23} & \vert & a_{21} & a_{22} \\
+a_{31} & a_{32} & a_{33} & \vert & a_{31} & a_{32}
+\end{pmatrix}
+\end{equation}
+
+# Determinanten
+\scriptsize
+\setstretch{1}
+\underline{Beweis}
+
+Für $A \in \mathbb{R}^{2 \times 2}$ gilt nach Definition
+\begin{align}
+\begin{split}
+\mbox{det}(A)
+& = \sum_{j = 1}^n a_{1j}(-1)^{1+j} \det\left(A_{1j}\right) \\
+& = a_{11}(-1)^{1 + 1}\det(A_{11}) + a_{12}(-1)^{1 + 2}\det(A_{12}) \\
+& = a_{11}\det((a_{22})) - a_{12}\det((a_{21})) \\
+& = a_{11}a_{22} - a_{12}a_{21} \\
+\end{split}
+\end{align}
+Für $A \in \mathbb{R}^{3 \times 3}$ gilt nach Definition und mit der Formel für Determinanten von $2 \times 2$ Matrizen
+\begin{align}
+\begin{split}
+\mbox{det}(A)
+& = \sum_{j = 1}^n a_{1j}(-1)^{1+j} \det\left(A_{1j}\right) \\
+& =   a_{11}(-1)^{1+1} \det\left(A_{1j}\right) + a_{12}(-1)^{1+2} \det\left(A_{12}\right) +  a_{13}(-1)^{1+3} \det\left(A_{13}\right)) \\
+& =   a_{11}\det(A_{11}) - a_{12}\det(A_{12}) + a_{13}\det(A_{13}) \\
+& =   a_{11}\det\left(\begin{pmatrix} a_{22} & a_{23} \\ a_{32} & a_{33}\end{pmatrix} \right)
+    - a_{12}\det\left(\begin{pmatrix} a_{21} & a_{23} \\ a_{31} & a_{33}\end{pmatrix} \right)
+    + a_{13}\det\left(\begin{pmatrix} a_{21} & a_{22} \\ a_{31} & a_{32}\end{pmatrix} \right) \\
+& =   a_{11}\left(a_{22}a_{33} - a_{23}a_{32} \right)
+    - a_{12}\left(a_{21}a_{33} - a_{23}a_{31} \right)
+    + a_{13}\left(a_{21}a_{32} - a_{22}a_{31} \right) \\
+& =   a_{11}a_{22}a_{33} - a_{11}a_{23}a_{32}
+    - a_{12}a_{21}a_{33} + a_{12}a_{23}a_{31}
+    + a_{13}a_{21}a_{32} - a_{13}a_{22}a_{31} \\
+& =   a_{11}a_{22}a_{33} + a_{12}a_{23}a_{31} + a_{13}a_{21}a_{32}
+    - a_{12}a_{21}a_{33} - a_{11}a_{23}a_{32} - a_{13}a_{22}a_{31}.
+\end{split}
+\end{align}
+
+
+# Determinanten
+
+\small
+Beispiel 1
+\footnotesize
+
+Es seien
+\begin{equation}
+A :=
+\begin{pmatrix}
+2 & 1 \\
+3 & 4
+\end{pmatrix}
+\mbox{ und }
+B :=
+\begin{pmatrix}
+1 & 0 \\
+0 & 0
+\end{pmatrix}
+\end{equation}
+Dann ergeben sich
+\begin{equation}
+\det(A)
+= 2 \cdot 4 - 1 \cdot 3 = 8 - 3 = 5.
+\end{equation}
+und
+\begin{equation}
+\det(B)
+= 1 \cdot 0 - 0 \cdot 0 = 0 - 0 = 0.
+\end{equation}
+\vspace{2mm}
+
+\small
+Beispiel 2
+\footnotesize
+Es sei
+\begin{equation}
+C :=
+\begin{pmatrix}
+2 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 3
+\end{pmatrix}
+\end{equation}
+Dann ergibt sich
+\begin{equation}
+\det(C)
+= 2 \cdot 1 \cdot 3
++ 0 \cdot 0 \cdot 0
++ 0 \cdot 0 \cdot 0
+- 0 \cdot 0 \cdot 3
+- 0 \cdot 0 \cdot 0
+- 0 \cdot 1 \cdot 0
+= 2 \cdot 1 \cdot 3
+= 6
+\end{equation}
+
+# Determinanten
+\setstretch{1.1}
+\footnotesize
+```{r}
+# Beispiel 1
+A = matrix(c(2,1,                  # Matrixdefinition
+             3,4),
+           nrow = 2,
+           byrow = TRUE)
+det(A)                             # Determinantenberechnung
+
+B = matrix(c(1,0,                  # Matrixdefinition
+             0,0),
+           nrow = 2,
+           byrow = TRUE)
+det(B)                             # Determinantenberechnung
+
+# Beispiel 2
+C = matrix(c(2,0,0,                # Matrixdefinition
+             0,1,0,
+             0,0,3),
+           nrow = 3,
+           byrow = TRUE)
+det(C)                             # Determinantenberechnung
+```
+
+# Determinanten
+\footnotesize
+\begin{theorem}[Rechenregeln für Determinanten]
+\normalfont
+(Determinantenmultiplikationssatz.) Für $A,B \in \mathbb{R}^{n \times n}$ gilt
+\begin{equation}
+\det(AB) = \det(A)\det(B).
+\end{equation}
+
+(Transposition.) Für $A \in \mathbb{R}^{n \times n}$ gilt
+\begin{equation}
+\det(A) = \det\left(A^T\right).
+\end{equation}
+
+(Inversion.) Für eine invertierbare Matrix $A \in \mathbb{R}^{n \times n}$ gilt
+\begin{equation}
+\det\left(A^{-1}\right) = \frac{1}{\det(A)}
+\end{equation}
+
+(Dreiecksmatrizen.) Für Matrizen
+$A = (a_{ij})_{1 \le i,j\le n} \in \mathbb{R}^{n \times n}$
+mit $a_{ij} = 0$ für $i > j$ oder $a_{ij} = 0$ \mbox{ für } $j > i$ gilt
+\begin{equation}
+\det(A) = \prod_{i=1}^n a_{ii}
+\end{equation}
+\end{theorem}
+\footnotesize
+Bemerkungen
+
+* Wir verzichten auf einen Beweis.
+* Bei Dreiecksmatrizen sind alle Elemente unterhalb ($i > j$) oder oberhalb ($j > i$) der Diagonalen 0
+* Bei $I_n$ sind alle nicht-diagonalen Elemente 0 und alle diagonalen Elemente 1, also folgt $\det(I_n) = 1$.
+
+
+# Determinanten
+\small
+\begin{theorem}[Invertierbarkeit und Determinante]
+\normalfont
+$A \in \mathbb{R}^{n \times n}$ ist dann und nur dann invertierbar, wenn gilt,
+dass $\det(A) \neq 0$. Es gilt also
+\begin{align}
+\begin{split}
+A \mbox{ ist invertierbar} \Leftrightarrow \det(A) \neq 0
+\mbox{ und}
+A \mbox{ ist nicht invertierbar} \Leftrightarrow \det(A) = 0.
+\end{split}
+\end{align}
+\end{theorem}
+
+\footnotesize
+\underline{Beweisandeutung}
+\vspace{1mm}
+
+Wir zeigen lediglich, dass aus der Invertierbarkeit von $A$ folgt, dass $\det(A)$
+nicht null sein kann. Nehmen wir also an, dass $A$ invertierbar ist. Dann gibt
+es eine Matrix $B$ mit $AB = I_n$ und mit dem Determinantenmultiplikationssatz
+folgt
+\begin{equation}
+\det(AB) = \det(A)\det(B) = \det(I_n) = 1.
+\end{equation}
+Also kann $\det(A) = 0$ nicht gelten, denn sonst wäre $0 = 1$.
+
+$\hfill\Box$
+
+
+# Determinanten
+
+\textcolor{darkblue}{Visuelle Intuition}
+
+\small
+
+$a_1,...,a_n \in \mathbb{R}^n$  seien die Spalten von $A \in \mathbb{R}^{n \times n}$.
+
+$\Rightarrow \det(A)$ enstpricht dem signierten Volumen des von $a_1,...,a_n\in \mathbb{R}^n$ aufgespannten Parallelotops.
+
+```{r, eval = F, echo = F}
+graphics.off()
+fdir        =  file.path(getwd(), "2_Abbildungen")
+dev.new()
+par(
+family      = "sans",
+mfcol       = c(1,3),
+pty         = "s",
+bty         = "l",
+lwd         = 1,
+las         = 1,
+mgp         = c(2,1,0),
+xaxs        = "i",
+yaxs        = "i",
+font.main   = 1,
+cex         = 1.2,
+cex.main    = 1.2)
+
+# Vektordefinitionen
+x           = c(1,2)
+y           = c(3,1)
+z           = c(4,3)
+
+# Visualisierung
+plot(
+NULL,
+xlab        = TeX("$x_1$"),
+ylab        = TeX("$x_2$"),
+xlim        = c(0,4),
+ylim        = c(0,4))
+grid()
+points(
+c(x[1],y[1]),
+c(x[2],y[2]),
+pch = 19)
+arrows(
+x0          = c(0,0,x[1],y[1]),
+y0          = c(0,0,x[2],y[2]),
+x1          = c(x[1],y[1],z[1],z[1]),
+y1          = c(x[2],y[2],z[2],z[2]),
+angle       = 20,
+length      = .1,
+col         = c("black", "black","gray60", "gray60"))
+
+# Vektordefinitionen
+x           = c(2,0)
+y           = c(0,2)
+z           = x + y
+
+# Visualisierung
+plot(
+NULL,
+xlab        = TeX("$x_1$"),
+ylab        = TeX("$x_2$"),
+xlim        = c(0,4),
+ylim        = c(0,4))
+grid()
+points(
+c(x[1],y[1]),
+c(x[2],y[2]),
+pch = 19)
+arrows(
+x0          = c(0,0,x[1],y[1]),
+y0          = c(0,0,x[2],y[2]),
+x1          = c(x[1],y[1],z[1],z[1]),
+y1          = c(x[2],y[2],z[2],z[2]),
+angle       = 20,
+length      = .1,
+col         = c("black", "black","gray60", "gray60"),
+xpd         = TRUE)
+
+
+# Vektordefinitionen
+x           = c(2,2)
+y           = c(2,2)
+z           = x + y
+
+# Visualisierung
+plot(
+NULL,
+xlab        = TeX("$x_1$"),
+ylab        = TeX("$x_2$"),
+xlim        = c(0,4),
+ylim        = c(0,4))
+grid()
+points(
+c(x[1],y[1]),
+c(x[2],y[2]),
+pch = 19)
+arrows(
+x0          = c(0,0,x[1],y[1]),
+y0          = c(0,0,x[2],y[2]),
+x1          = c(x[1],y[1],z[1],z[1]),
+y1          = c(x[2],y[2],z[2],z[2]),
+angle       = 20,
+length      = .1,
+col         = c("black", "black","gray60", "gray60"),
+xpd         = TRUE)
+
+
+# export to pdf
+dev.copy2pdf(                                                                    # export to PDF
+             file   = file.path(fdir, "mvda_2_determinante.pdf"),           # filename
+             width  = 12,                                                         # PDF width
+             height = 4                                                          # PDF height
+             )
+```
+\footnotesize
+\begin{equation*}
+A_1 =
+\begin{pmatrix}
+3 & 1 \\
+1 & 2
+\end{pmatrix}
+\quad\quad\quad\quad\quad\quad\quad\quad
+A_2 =
+\begin{pmatrix}
+2 & 0 \\
+0 & 2
+\end{pmatrix}
+\quad\quad\quad\quad\quad\quad\quad\quad
+A_3 =
+\begin{pmatrix}
+2 & 2 \\
+2 & 2
+\end{pmatrix}
+\end{equation*}
+
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("3_Abbildungen/mvda_3_determinante.pdf")
+```
+\vspace{-5mm}
+\begin{equation*}
+\det(A_1) =
+3\cdot 2 - 1 \cdot 1 = 5
+\quad\quad\quad\quad
+\det(A_2) =
+2\cdot 2 - 0 \cdot 0 = 4
+\quad\quad\quad\quad
+\det(A_3) =
+2\cdot 2 - 2 \cdot 2 = 0
+\end{equation*}
+
+
+
+#
+\large
+\setstretch{2}
+\vfill
+Definition
+
+Operationen
+
+Determinanten
+
+**Rang**
+
+Spezielle Matrizen
+
+Selbstkontrollfragen
+\vfill
+
+# Rang
+
+\small
+Überblick
+
+\footnotesize
+\setstretch{3}
+* Der Rang einer Matrix ist eine Zahl an der bestimmte Eigenschaften der Matrix abgelesen werden können.
+* In dieser Hinsicht ist der Rang einer Matrix sehr ähnlich zur Determinante einer Matrix.
+* Viele Resultate in der linearen Algebra beruhen auf Annahmen über den Rang einer Matrix.
+* Der Rang einer Matrix ist ein tiefgehendes Konzept, das wir hier nur oberflächlich behandeln können.
+* Für ausführlichere Einführungen, siehe z.B. @searle_1982, Chapter 6 und @strang_2009, Kapitel Chapter 3.2.
+* Wir verwenden hier einen Zugang über das Konzept der linearen Unabhängigkeit von Vektoren.
+* Wir erinnern zunächst an dieses Konzept.
+
+
+# Rang
+\small
+\begin{definition}[Rang einer Matrix]
+\justifying
+Es sei $A \in \mathbb{R}^{n \times m}$ und
+\begin{equation}
+a_1 :=
+\begin{pmatrix}
+a_{11} \\
+\vdots \\
+a_{n1}
+\end{pmatrix},
+a_2 :=
+\begin{pmatrix}
+a_{12} \\
+\vdots \\
+a_{n2}
+\end{pmatrix},
+...,
+a_n :=
+\begin{pmatrix}
+a_{1m} \\
+\vdots \\
+a_{nm}
+\end{pmatrix}
+\in
+\mathbb{R}^{n}
+\end{equation}
+seien die \textit{Spalten(vektoren)} von $A$. Dann ist \textit{der Rang von $A$}, 
+geschrieben als $\mbox{rg}(A)$ definiert als die maximale Anzahl der linear unabhängigen
+Spalten(vektoren) von $A$. Ist die Anzahl der maximal linear unabhängigen Spalten(vektoren)
+von $A$ gleich $m$, so sagt man, dass \textit{$A$ vollen Spaltenrang hat}.
+\end{definition}
+
+\footnotesize
+Bemerkungen
+
+* Die Spalten einer Matrix werden hier als Vektoren in $\mathbb{R}^n$ verstanden.
+* Die Definition macht keine Aussage darüber, wie der Rang einer Matrix zu bestimmen ist.
+* Es gibt verschiedene Algorithmen um den Rang einer Matrix zu bestimmen, wir vertiefen dies nicht.
+
+# Rang
+Beispiele
+
+\footnotesize
+\noindent (1) Es sei
+\begin{equation}
+X := \begin{pmatrix} 1 & 0  \\ 0 & 1  \\ 0 &  1  \end{pmatrix}
+\end{equation}
+Dann ist sind die Spaltenvektoren keine skalaren Vielfachen voneinander und damit linear unabhängig. 
+Es gilt also $\mbox{rg}(X) = 2$.
+
+\noindent (2) Es sei
+\begin{equation}
+X := \begin{pmatrix} 1 & 2  \\ 1 & 2  \\ 0 &  0  \end{pmatrix}
+\end{equation}
+Dann ist sind die Spaltenvektoren skalare Vielfache voneinander. Die maximale
+Möglichkeit aus den Spaltenvektoren linear unabhängige Vektoren auszuwählen ist
+also 1. Die maximale Anzahl an linear unabhängigen Vektoren der Matrix ist als 1 
+und es gilt  $\mbox{rg}(X) = 1$.
+
+Bemerkungen
+
+* In Beispiel (2) gerät die Definition des Rangs einer Matrix wie hier gegeben an ihre Grenze.
+* Alternative Definitionen, z.B. über die Dimension des Spaltenraumes sind eindeutiger, aber tiefgehender.
+* Die einzige Matrix mit Rang 0 ist die Nullmatrix.
+
+# Range
+\vspace{1mm}
+Beispiele
+
+\footnotesize
+```{r}
+# Bestimmung des Matrixrangs in R über QR Zerlegung (https://de.wikipedia.org/wiki/QR-Zerlegung)
+# Beispiel (1)
+X  = matrix(c(1,0,                          # Matrixdefinition
+              0,1,
+              0,0),
+            nrow = 3,
+            byrow = TRUE)
+rg = qr(X)$rank                             # Rangevaluation
+print(rg)                                   # Ausgabe
+
+# Beispiel (2)
+X  = matrix(c(1,2,                          # Matrixdefinition
+              1,2,
+              0,0),
+            nrow = 3,
+            byrow = TRUE)
+rg = qr(X)$rank                             # Rangevaluation
+print(rg)                                   # Ausgabe
+
+```
+
+# Rang
+\small
+\begin{theorem}[Rang und Invertierbarkeit]
+\justifying
+\normalfont
+$A \in \mathbb{R}^{n \times n}$ sei eine Matrix. Dann gelten
+
+\begin{itemize}
+\item[(1)] $\mbox{rg}(A) = n \Leftrightarrow$ $A$ ist invertierbar.
+\item[(2)] $\mbox{rg}(A) < n \Leftrightarrow$ $A$ ist nicht invertierbar.
+\end{itemize}
+\end{theorem}
+
+\footnotesize
+Bemerkung
+
+* Wir verzichten auf einen Beweis.
+
+
+
+#
+\large
+\setstretch{2}
+\vfill
+Definition
+
+Operationen
+
+Determinanten
+
+Rang
+
+**Spezielle Matrizen**
+
+Selbstkontrollfragen
+\vfill
+
+
+# Spezielle Matrizen
+
+\footnotesize
+\begin{definition}[Nullmatrizen, Einheitsmatrizen, Einheitsvektoren, Einsvektoren]
+\begin{itemize}
+\item Wir bezeichnen \textit{Nullmatrizen} mit
+\begin{equation}
+0_{nm} := (0)_{1 \le i \le n, 1 \le j \le m} \in \mathbb{R}^{n \times m}
+\mbox{ und }
+0_{n} := (0)_{1 \le i \le n} \in \mathbb{R}^{n}
+\end{equation}
+\item Wir bezeichnen die \textit{Einheitsmatrix} mit
+\begin{equation}
+I_{n} := (i_{jk})_{1 \le i \le n, 1 \le j \le n} \in \mathbb{R}^{n \times n} \mbox{ mit } i_{jk} = 1 \mbox{ für } j = k \mbox{ und } i_{jk} = 0 \mbox{ für } j \neq k
+\end{equation}
+\item Wir bezeichnen die \textit{Einheitsvektoren} $e_i, i = 1,...,n$ mit
+\begin{equation}
+e_{i} := (e_{{i}_j})_{1 \le j \le n} \in \mathbb{R}^{n} \mbox{ mit } e_{{i}_j} = 1 \mbox{ für } i = j \mbox{ und } e_{{i}_j} = 0 \mbox{ für } i \neq j
+\end{equation}
+\item Wir bezeichnen den \textit{Einsvektor} mit
+\begin{equation}
+1_n := (1)_{1 \le i \le n} \in \mathbb{R}^n
+\end{equation}
+\end{itemize}
+\end{definition}
+
+Bemerkungen
+
+* $0_{nm}$ und $0_{n}$ bestehen nur aus Nullen.
+* $I_{n}$ besteht nur aus Nullen und Diagonalelementen gleich Eins.
+* $e_i, i  1,....,n$ besteht nur aus Nullen und einer Eins in der $i$ten Komponente.
+* $1_n$ besteht nur aus Einsen.
+
+
+# Spezielle Matrizen
+\footnotesize
+\begin{definition}[Symmetrische, diagonale, und orthogonale Matrizen]
+\begin{itemize}
+\item Eine Matrix $S \in \mathbb{R}^{n \times n}$ heißt \textit{symmetrisch}, wenn gilt dass $S^T = S$.
+\item Eine Matrix $D \in \mathbb{R}^{n \times n}$ heißt \textit{Diagonalmatrix}, wenn $d_{ij} = 0$ für $1 \le i,j \le n, i \neq j$.
+\item Eine Matrix $Q \in \mathbb{R}^{n \times n}$ heißt \textit{orthogonal}, wenn ihre Spaltenvektoren wechselseitig \textit{orthonormal} sind.
+\end{itemize}
+\end{definition}
+
+Bemerkungen
+\begin{itemize}
+\justifying
+\item Eine Diagonalmatrix $D$ mit Diagonalelementen $d_1,...,d_n$ schreibt man auch als $ D= \mbox{diag}(d_1,...,d_n)$.
+\item Symmetrische, diagonale, und orthogonale Matrizen haben viele ``gute'' Eigenschaften.
+\item Zum Beispiel überzeugt man sich einfach davon, dass Multiplikation einer Matrix $A$ 
+von links mit einer Diagonalmatrix $D$ der Multiplikation der Zeilen der Matrix $A$ 
+mit den entsprechenden Diagonaleinträgen von $D$ entspricht. Die entsprechende 
+Multiplikation von rechts entspricht der Multiplikation der Spalten von $A$ mit 
+entsprechenden Diagonaleinträgen von $D$.
+\item Eine weitere im Folgenden wichtige Eigenschaft von Diagonalmatrizen ist
+\begin{itemize}
+\begin{footnotesize}
+\item[$\circ$] $D := \mbox{diag}(d_1,...,d_n)$ ist eine Diagonalmatrix $\Rightarrow$ $\det(D) = \prod_{i=1}^n d_i$.
+\end{footnotesize}
+\end{itemize}
+\end{itemize}
+
+# Spezielle Matrizen
+
+\small
+\begin{definition}[Positiv-definite Matrix]
+Eine quadratische Matrix $C \in \mathbb{R}^{n \times n}$ heißt positiv-definit ($\mbox{p.d.}$), wenn
+\begin{itemize}
+\item $C$ eine symmetrische Matrix ist und
+\item für alle $x \in \mathbb{R}^n, x \neq 0_n$ gilt, dass $x^TCx > 0$ ist.
+\end{itemize}
+\end{definition}
+
+\footnotesize
+Bemerkungen
+
+* Im LGM Kontext sind $\mbox{p.d.}$ Matrizen für die Definition der multivariaten Normalverteilungen grundlegend.
+* Wir werden einige Aussagen zu positiv-definiten Matrizen für die LGM Theorie benötigen.
+* Wir halten dieses Aussagen hier ohne Beweis fest und verweisen für Beweise auf die einschlägige Literatur
+
+(1) Jede positiv-definite Matrix ist invertierbar.
+(2) Die Inverse einer positiv-definiten Matrix ist ebenfalls positiv-definit.
+
+
+#
+\large
+\setstretch{2}
+\vfill
+Definition
+
+Operationen
+
+Determinanten
+
+Rang
+
+Spezielle Matrizen
+
+**Selbstkontrollfragen**
+
+\vfill
+
+# Selbstkontrollfragen
+\footnotesize
+\begin{enumerate}
+\item Geben Sie die Definition einer Matrix wieder.
+\item Nennen Sie sechs Matrixoperationen.
+\item Geben Sie die Definitionen der Matrixaddition und -subtraktion wieder.
+\item Geben Sie die Definition der Skalarmultiplikation für Matrizen wieder.
+\item Geben Sie die Definition der Matrixtransposition wieder.
+\item Es seien
+\begin{equation}
+A :=
+\begin{pmatrix*}[r]
+1 & 2 \\
+2 & 1
+\end{pmatrix*},
+B :=
+\begin{pmatrix*}[r]
+3 & 0 \\
+1 & 2
+\end{pmatrix*},
+\mbox{ und }
+c := 2
+\end{equation}
+Berechnen Sie
+\begin{equation}
+D := c\left(A - B^T\right)
+\mbox{ und }
+E := \left(cA\right)^T + B.
+\end{equation}
+per Hand und überprüfen Sie Ihre Rechnung mit R.
+
+```{r, eval = F, echo = F}
+
+# Definitionen
+A = matrix(c(1,2,
+             2,1),
+           nrow  = 2,
+           byrow = TRUE)
+B = matrix(c(3,0,
+             1,2),
+           nrow  = 2,
+           byrow = TRUE)
+c = 2
+
+# Evaluation
+print(A)
+print(B)
+print(c*(A - t(B)))
+print(t(c*A) + B)
+
+```
+\item Geben Sie die Definition der Matrixmultiplikation wieder.
+\item Es seien $A \in \mathbb{R}^{3 \times 2}, B \in \mathbb{R}^{2\times 4}$
+und $C \in \mathbb{R}^{3 \times 4}$. Prüfen Sie, ob folgende Matrixprodukte
+definiert sind, und wenn ja, geben Sie die Größe der resultierenden Matrix an:
+\begin{equation}
+ABC, \quad ABC^T, \quad, A^TCB^T \quad, BAC.
+\end{equation}
+```{r, echo = F, eval = F}
+A = matrix(rnorm(6) , nrow = 3)
+B = matrix(rnorm(8) , nrow = 2)
+C = matrix(rnorm(12), nrow = 3)
+print(A)
+print(B)
+print(C)
+print(A %*% B %*% t(C))
+print(t(A) %*% C %*% t(B))
+```
+\end{enumerate}
+
+# Selbstkontrollfragen
+\footnotesize
+\begin{enumerate}
+\setcounter{enumi}{8}
+\item Es seien
+\begin{equation}
+A :=
+\begin{pmatrix*}[r]
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+3 & 2 & 0
+\end{pmatrix*}
+B :=
+\begin{pmatrix*}[r]
+1 & 2 & 2 \\
+1 & 3 & 1 \\
+2 & 0 & 0
+\end{pmatrix*}
+\mbox{ und }
+C :=
+\begin{pmatrix*}[r]
+1 \\ 3 \\ 2
+\end{pmatrix*}.
+\end{equation}
+Berechnen Sie die Matrixprodukte
+\begin{equation}
+AB , \quad\quad
+B^TA^T, \quad\quad
+\left(B^TA^T\right)^T, \quad\quad
+AC
+\end{equation}
+per Hand und überprüfen Sie Ihre Rechnung mit R.
+
+```{r, eval = F, echo = F}
+# Definitionen
+A = matrix(c(1,2,3,
+             4,5,6,
+             3,2,0),
+           nrow  = 3,
+           byrow = TRUE)
+B = matrix(c(1,2,2,
+             1,3,1,
+             2,0,0),
+           nrow  = 3,
+           byrow = TRUE)
+C = matrix(c(1,3,2),
+           nrow  = 3,
+           byrow = TRUE)
+print(A)
+print(B)
+print(C)
+print(A %*% B)
+print(t(B) %*% t(A))
+print(t(t(B) %*% t(A)))
+print(A %*% C)
+```
+
+\item Invertieren Sie die Matrizen $A$ und $B$ aus der vorherigen Aufgabe mithilfe
+von solve() oder matlib::inv()  und überprüfen Sie die Inverseeigenschaft der 
+inversen Matrizen mithilfe von R.
+
+```{r, eval = F, echo = F}
+
+# Matrixinversion
+library(matlib)
+A = matrix(c(1,2,3,
+             4,5,6,
+             3,2,0),
+           nrow  = 3,
+           byrow = TRUE)
+B = matrix(c(1,2,2,
+             1,3,1,
+             2,0,0),
+           nrow  = 3,
+           byrow = TRUE)
+print(inv(A))
+print(inv(B))
+print(inv(A) %*% A)
+print(inv(B) %*% B)
+print(solve(B) %*% B)
+
+```
+
+\item Geben Sie die Formel für die Determinante von $A := (A_{ij})_{1 \le i,j \le 2} \in \mathbb{R}^2$ wieder.
+\item Geben Sie die Formel für die Determinante von $A := (A_{ij})_{1 \le i,j \le 3} \in \mathbb{R}^3$ wieder.
+\item Berechnen Sie die Determinanten von
+\begin{equation}
+A := \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}
+B := \begin{pmatrix} 3 & 2 & 1 \\ 2 & 3 & 2 \\ 1 & 2 & 3 \end{pmatrix} \mbox{ und }
+C := \mbox{diag}(1,2,3)
+\end{equation}
+per Hand und überprüfen Sie Ihre Rechnung mit R.
+\end{enumerate}
+
+# Selbstkontrollfragen
+\footnotesize
+\setstretch{1.6}
+\begin{enumerate}
+\setcounter{enumi}{13}
+\item Geben Sie den Determinantenmultiplikationssatz wieder.
+\item Geben Sie das Theorem zur Invertierbarkeit und Determinante von Matrizen wieder.
+\item Geben Sie die Definition des Rangs einer Matrix wieder.
+\item Wann sagt man, dass eine Matrix vollen Spaltenrang hat?
+\item Bestimmen Sie dien Rang folgender Matrizen durch überlegen und mithilfe von R
+\begin{equation}
+X_1 = \begin{pmatrix} 1 & 1 \\ 1 & 2 \\ 1 & 3\end{pmatrix},
+X_2 = \begin{pmatrix} 1 & 1 & 0\\ 1 & 1 & 0 \\ 1 & 0 & 1 \\ 1 & 0 & 1\end{pmatrix},
+X_3 = \begin{pmatrix} 1 & 0\\ 1 & 0 \\ 1 & 1 \\ 1 & 1\end{pmatrix}.
+\end{equation}
+\item Geben Sie die Definition einer symmetrischen Matrix wieder.
+\item Geben Sie die Definition einer Diagonalmatrix wieder.
+\item Geben Sie die Definition einer orthogonalen Matrix wieder.
+\item Geben Sie die Definition einer positiv-definiten Matrix wieder.
+\end{enumerate}
+
+# References
+\footnotesize
