@@ -1,0 +1,1044 @@
+---
+fontsize: 8pt
+bibliography: 6_Referenzen.bib
+citation_package: natbib
+output:
+  beamer_presentation:
+    keep_tex: true
+    includes:
+      in_header: 6_header.tex
+---
+
+
+```{r, include = F}
+source("6_R_common.R")
+```
+
+#  {.plain}
+\center
+```{r, echo = FALSE, out.width = "20%"}
+knitr::include_graphics("6_Abbildungen/mvda_6_otto.png")
+```
+
+\vspace{2mm}
+
+\Huge
+Multivariate Datenanalyse
+\vspace{6mm}
+
+\large
+MSc Psychologie WiSe 2022/23
+
+\vspace{6mm}
+\large
+Prof. Dr. Dirk Ostwald
+
+#  {.plain}
+
+\vfill
+\center
+\huge
+\textcolor{black}{(6) Multivariate Normalverteilungen}
+\vfill
+
+# 
+\setstretch{1.4}
+\textcolor{darkblue}{Anwendungsfälle}
+
+\small
+Allgemeines Lineares Modell 
+
+* T-Tests, ANOVA, einfache und multiple Regression
+
+Multivariates Allgemeines Lineares Modell 
+
+* T$^2$-Tests, MANOVA, einfache und multiple multivariate Regression
+
+Hierarchische Modelle 
+
+* Linear Mixed Models, Bayesianische Regression, Diskriminanzanalyse
+
+Lineare Normalverteilungsmodelle
+
+* Probabilistische Hauptkomponentenanalyse, Faktorenanalyse
+
+Kalman Filter, Gaussian Processes, Gaussian Random Fields, ...
+
+#
+\large
+\setstretch{2.8}
+\vfill
+**Konstruktion und Definition**
+
+Marginale Normalverteilungen
+
+Gemeinsame Normalverteilungen
+
+Bedingte Normalverteilungen
+
+Selbstkontrollfragen
+\vfill
+
+
+# Konstruktion und Definition
+\setstretch{1.3}
+\footnotesize
+\begin{definition}[Normalverteilte Zufallsvariable]
+\justifying
+$\xi$ sei eine Zufallsvariable mit Ergebnisraum $\mathbb{R}$ und WDF
+\begin{equation}
+p : \mathbb{R} \to \mathbb{R}_{>0}, x\mapsto p(x)
+:= \frac{1}{\sqrt{2\pi \sigma^2}}\exp\left(-\frac{1}{2\sigma^2}(x - \mu)^2\right).
+\end{equation}
+Dann sagen wir, dass $\xi$ einer \textit{Normalverteilung (oder \textit{Gauß-Verteilung})
+mit Parametern $\mu \in \mathbb{R}$ und $\sigma^2 > 0$} unterliegt und nennen $\xi$
+eine \textit{normalverteilte Zufallsvariable}. Wir kürzen dies mit
+$\xi \sim N(\mu,\sigma^2)$ ab. Die WDF einer normalverteilten
+Zufallsvariable bezeichnen wir mit
+\begin{equation}
+N\left(x;\mu,\sigma^2\right) := \frac{1}{\sqrt{2\pi \sigma^2}}\exp\left(-\frac{1}{2\sigma^2}(x - \mu)^2\right).
+\end{equation}
+\end{definition}
+Bemerkungen
+
+* Es gelten $\mathbb{E}(\xi) = \mu$ und $\mathbb{V}(\xi) = \sigma^2$.
+* Der Parameter $\mu$ entspricht dem Wert höchster Wahrscheinlichkeitsdichte.
+* Der Parameter $\sigma^2$ spezifiziert die Breite der WDF.
+* $\xi \sim N(0,1)$ heißt auch *standardnormalverteilt*.
+
+
+# Konstruktion und Definition
+\vspace{1mm}
+\textcolor{darkblue}{Visualisierung univariater Normalverteilungsdichtefunktionen}
+\vspace{1mm}
+\vspace{1cm}
+
+```{r, echo = F, eval = F}
+graphics.off()
+fdir        =  file.path(getwd(), "6_Abbildungen")
+
+# model formulation
+x_min   = -10                                                                    # minimum x-value
+x_max   = 10                                                                     # maximum x-value
+x_res   = 1e3                                                                    # x space resolution
+x       = seq(x_min,x_max,len = x_res)                                           # x space
+mu      = c(0,-2.5,3)                                                            # expectation parameters
+sigsqr  = c(1,10,0.5)                                                            # variance parameters
+
+# plot specifications
+dev.new()                                                                        # new figure
+theta   = par(                                                                   # figure parameters
+          mfcol      = c(1,length(mu)),                                          # subplot grid
+          family     = "sans",                                                   # font family
+          pty        = "s",                                                      # square plots
+          bty        = "l",                                                      # plot box, o, l, 7, c, or ]
+          lwd        = 1,                                                        # line width
+          las        = 1,                                                        # 0: axis parallel, 1: horizontal, 2: axis perpendicular, 3: vertical
+          mgp        = c(2,1,0),                                                 # margin line in mex unit
+          font.main  = 1,                                                        # title font type
+          cex.main   = 1.4                                                       # title  magnification factor
+          )
+# parameter iterations
+for (i in 1:length(mu)){
+
+  # Gaussian PDFs
+  plot(
+       x,                                                                        # x values
+       dnorm(x,mu[i],sqrt(sigsqr[i])),                                           # y values
+       type         = "l",                                                       # line style
+       lwd          =  1.5,                                                      # line width
+       col          = "Black",                                                   # line color
+       ylab         = " ",                                                       # no y-axis label
+       xlab         = "x",                                                       # x-axis label
+       ylim         = c(0,0.6))                                                  # y-axis limits
+  title(sprintf("N(x; %g,%g)", mu[i], sigsqr[i]))                                # plot title, print formatted data to string
+}
+
+# export to pdf
+dev.copy2pdf(                                                                    # export to PDF
+             file   = file.path(fdir, "mvda_6_normalverteilung_wdf.pdf"),        # filename
+             width  = 7,                                                         # PDF width
+             height = 3                                                          # PDF height
+             )
+```
+
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("6_Abbildungen/mvda_6_normalverteilung_wdf.pdf")
+```
+
+
+# Konstruktion und Definition
+\footnotesize
+\begin{theorem}[Konstruktion bivariater Normalverteilungen]
+\justifying
+\normalfont
+$\zeta_1 \sim N(0,1)$ und $\zeta_2 \sim N(0,1)$ seien zwei unabhängige 
+standardnormalverteilte  Zufallsvariablen. Weiterhin seien $\mu_1,\mu_2\in \mathbb{R}$,
+$\sigma_1,\sigma_2>0$ und $\rho \in ]-1,1[$. Schließlich seien
+\begin{align}
+\begin{split}
+\xi_1 & := \sigma_1\zeta_1 + \mu_1                                            \\
+\xi_2 & := \sigma_2\left(\rho\zeta_1 + (1 -\rho^2)^{1/2}\zeta_2\right) + \mu_2. 
+\end{split}
+\end{align}
+Dann hat die WDF des Zufallsvektors $\xi := (\xi_1,\xi_2)^T$, also der gemeinsamen 
+Verteilung von $\xi_1$ und $\xi_2$, die Form
+\begin{equation}
+p : \mathbb{R}^2 \to \mathbb{R}_{>0},\, x \mapsto p(x)
+:= (2\pi)^{-\frac{m}{2}}|\Sigma|^{-\frac{1}{2}}\exp\left(-\frac{1}{2}(x-\mu)^T \Sigma^{-1} (x-\mu)\right),
+\end{equation}
+wobei
+\begin{equation}
+m := 2,
+\mu :=
+\begin{pmatrix}
+\mu_1 \\
+\mu_2
+\end{pmatrix}
+\mbox{ und }
+\Sigma :=
+\begin{pmatrix}
+\sigma_1^2           & \rho\sigma_1\sigma_2 \\
+\rho\sigma_2\sigma_1 & \sigma_2^2           \\
+\end{pmatrix}
+\end{equation}
+
+\end{theorem}
+
+Bemerkungen
+
+* Für einen Beweis siehe @degroot_2012, S. 338-339.
+* Man nennt die gemeinsame Verteilung von $\xi_1$ und $\xi_2$ *bivariate Normalverteilung*.
+
+# Konstruktion und Definition
+\textcolor{darkblue}{Konstruktion bivariater Normalverteilungen}
+
+\setstretch{.9}
+\tiny
+```{r}
+# Parameterdefinitionen
+mu_1   = 5.0                                              # \mu_1
+mu_2   = 4.0                                              # \mu_2
+sig_1  = 1.5                                              # \sigma_1    
+sig_2  = 1.0                                              # \sigma_2
+rho    = 0.9                                              # \rho
+
+# Realisierungen der standardnormalverteilten ZVen
+n      = 100                                              # Anzahl Realisierungen
+zeta_1 = rnorm(n)                                         # \zeta_1 \sim N(0,1)  
+zeta_2 = rnorm(n)                                         # \zeta_1 \sim N(0,1)
+
+# Evaluation von Realisierungen von \xi_1 und \xi_2
+xi_1   = sig_1*zeta_1 + mu_1                              # Realsierungen von zeta_1  
+xi_2   = sig_2*(rho*zeta_1 + sqrt(1-rho^2)*zeta_2) + mu_2 # Realsierungen von zeta_2  
+
+
+# Parameter der gemeinsamen Verteilung von \xi_1 und \xi_2
+mu     = matrix(c(mu_1,                                   # \mu \in \mathbb{R}^2
+                  mu_2),  
+                 nrow = 2, byrow = TRUE)
+Sigma  = matrix(c(sig_1^2        , rho*sig_1*sig_2,       # \Sigma \in \mathbb{R}^{2 x 2}
+                 rho*sig_1*sig_2, sig_2^2),  
+                 nrow = 2, byrow = TRUE)
+print(mu)
+print(Sigma)
+```
+
+```{r, eval = F, echo = F}
+# Abbildungsparameter
+graphics.off()
+library(latex2exp)
+fdir        =  file.path(getwd(), "6_Abbildungen")
+dev.new()
+par(
+family      = "sans",
+mfcol       = c(1,1),
+pty         = "s",
+bty         = "l",
+lwd         = 1,
+las         = 1,
+mgp         = c(2,1,0),
+xaxs        = "i",
+yaxs        = "i",
+font.main   = 1,
+cex         = .7,
+cex.main    = 1.2)
+
+# Visualisierung
+x_min       = 0                                           
+x_max       = 10                                           
+x_res       = 1e3                                          
+x_1         = seq(x_min, x_max, length.out = x_res)         
+x_2         = seq(x_min, x_max, length.out = x_res)        
+X           = expand.grid(x_1,x_2)                        
+p           = matrix(dmvnorm(as.matrix(X), mu, Sigma), nrow = x_res)
+contour(
+x_1,
+x_2,
+p,
+xlim        = c(x_min,x_max),
+ylim        = c(x_min,x_max),
+xlab        = TeX("$x_1$"),
+ylab        = TeX("$x_2$"),
+nlevels     = 5)
+points(
+xi_1,
+xi_2,
+pch         = 21,
+col         = "white",
+bg          = "gray60",
+cex         = .9)
+
+# export to pdf
+dev.copy2pdf(file = file.path(fdir, "mvda_6_konstruktion.pdf"), width = 3, height = 3)
+```
+
+# Konstruktion und Definition
+\vspace{2mm}
+\textcolor{darkblue}{Konstruktion bivariater Normalverteilungen}
+
+\center
+\small
+\textcolor{lightgray}{$\bullet$} Realisierungen von $\xi = (\xi_1,\xi_2)$, $-$ Isokonturen von $p$
+\vspace{2mm}
+```{r, echo = FALSE, out.width = "55%"}
+knitr::include_graphics("6_Abbildungen/mvda_6_konstruktion.pdf")
+```
+
+# Konstruktion und Definition
+\setstretch{1.3}
+\footnotesize
+\begin{definition}[Multivariate Normalverteilung]
+\justifying
+$\xi$ sei ein $m$-dimensionaler Zufallsvektor mit Ergebnisraum $\mathbb{R}^m$ und WDF
+\begin{equation}
+p : \mathbb{R}^m \to \mathbb{R}_{>0},\, x \mapsto p(x)
+:= (2\pi)^{-\frac{m}{2}}|\Sigma|^{-\frac{1}{2}}\exp\left(-\frac{1}{2}(x-\mu)^T \Sigma^{-1} (x-\mu)\right).
+\end{equation}
+Dann sagen wird, dass $\xi$ einer \textit{multivariaten (oder $m$-dimensionalen)
+Normalverteilung} mit \textit{Erwartungswertparameter} $\mu \in \mathbb{R}^m$ und
+positive-definitem \textit{Kovarianzmatrixparameter} $\Sigma \in \mathbb{R}^{m \times m}$
+unterliegt und nennen $\xi$ einen \textit{(multivariat) normalverteilten Zufallsvektor}.
+Wir kürzen dies mit $\xi \sim N(\mu,\Sigma)$ ab. Die WDF eines multivariat
+normalverteilten Zufallsvektors bezeichnen wir mit
+\begin{equation}
+N(x;\mu,\Sigma):= (2\pi)^{-\frac{m}{2}}|\Sigma|^{-\frac{1}{2}}\exp\left(-\frac{1}{2}(x-\mu)^T \Sigma^{-1} (x-\mu)\right).
+\end{equation}
+\end{definition}
+Bemerkungen
+
+* Es gelten $\mathbb{E}(\xi) = \mu$ und $\mathbb{C}(\xi) = \Sigma$.
+* Der Parameter $\mu \in \mathbb{R}^m$ entspricht dem Wert höchster Wahrscheinlichkeitsdichte
+* Die Diagonalelemente von $\Sigma$ spezifizieren die Breite der WDF bezüglich $\xi_1,...,\xi_m$.
+* Das $i,j$te Element von $\Sigma$ spezifiziert die Kovarianz on $\xi_i$ und $\xi_j$.
+* Der Term $(2\pi)^{-m/2}|\Sigma|^{-1/2}$ ist die Normalisierungskonstante für den Exponentialfunktionsterm.
+
+# Konstruktion und Definition
+\vspace{1mm}
+\textcolor{darkblue}{Visualisierung bivariater Normalverteilungsdichtefunktionen}
+\vspace{1mm}
+\tiny
+\setstretch{.9}
+
+```{r, eval = F, echo = T}
+# multivariate Normalverteilungstools
+# install.packages("mvtnorm")
+library(mvtnorm)
+
+
+# Ergebnisraumdefintion
+x_min  = 0                                           # x_i Minimum
+x_max  = 2                                           # x_i Maxim
+x_res  = 1e3                                         # x_i Auflösung
+x_1    = seq(x_min, x_max, length.out = x_res)       # x_1 Raum
+x_2    = seq(x_min, x_max, length.out = x_res)       # x_2 Raum
+X      = expand.grid(x_1,x_2)                        # X = (x_1,x_2)^T Raum
+
+# Parameterdefinition
+mu     = c(1,1)                                      # \mu \in \mathbb{R}^2
+S      = list(matrix(c(0.2,  0.15,  0.15, 0.2), 2),  # \Sigma in \mathbb{R}^{2 \times 2}
+              matrix(c(0.2,  0.00,  0.00, 0.2), 2),  # \Sigma in \mathbb{R}^{2 \times 2}
+              matrix(c(0.2, -0.15, -0.15, 0.2), 2))  # \Sigma in \mathbb{R}^{2 \times 2}
+
+# Kovarianzparametervariantenschleife
+for (Sigma in S){
+
+  # Wahrscheinlichkeitsdichtefunktionauswertung
+  p      = matrix(                                   # Matrixkonversion des von
+                  dmvnorm(as.matrix(X), mu, Sigma),  # dmvnorm() ausgegebenen Vektors
+                  nrow = x_res)
+
+  # Visualisierung
+  contour(
+  x_1,
+  x_2,
+  p,
+  xlim      =  c(x_min,x_max),
+  ylim      =  c(x_min,x_max),
+  nlevels   = 5)}
+```
+
+```{r, eval = F, echo = F}
+
+# R Paket für multivariate Normalverteilungen
+library(mvtnorm)
+
+# Abbildungsparameter
+graphics.off()
+library(latex2exp)
+fdir        =  file.path(getwd(), "6_Abbildungen")
+dev.new()
+par(
+family      = "sans",
+mfcol       = c(1,3),
+pty         = "s",
+bty         = "l",
+lwd         = 1,
+las         = 1,
+mgp         = c(2,1,0),
+xaxs        = "i",
+yaxs        = "i",
+font.main   = 1,
+cex         = .7,
+cex.main    = 1.2)
+
+
+# Ergebnisraumdefintion
+x_min  = 0                                           # x_i Minimum
+x_max  = 2                                           # x_i Maxim
+x_res  = 1e3                                         # x_i Auflösung
+x_1    = seq(x_min, x_max, length.out = x_res)       # x_1 Raum
+x_2    = seq(x_min, x_max, length.out = x_res)       # x_2 Raum
+X      = expand.grid(x_1,x_2)                        # X = (x_1,x_2)^T Raum
+
+# Parameterdefinition
+mu     = c(1,1)                                      # \mu \in \mathbb{R}^2
+S      = list(matrix(c(0.2,  0.15,  0.15, 0.2), 2),  # \Sigma in \mathbb{R}^{2 \times 2}
+              matrix(c(0.2,  0.00,  0.00, 0.2), 2),  # \Sigma in \mathbb{R}^{2 \times 2}
+              matrix(c(0.2, -0.15, -0.15, 0.2), 2))  # \Sigma in \mathbb{R}^{2 \times 2}
+L      = list(expression(bgroup("(", atop("0.20  0.15", " 0.15  0.20"), ")")),
+              expression(bgroup("(", atop("0.20  0.00", " 0.00  0.20"), ")")),
+              expression(bgroup("(", atop("0.20 -0.15", "-0.15  0.20"), ")")))
+
+
+
+# Kovarianzparametervariantenschleife
+i = 1
+for (Sigma in S){
+
+  # Wahrscheinlichkeitsdichtefunktionauswertung
+  p      = matrix(                                   # Matrixkonversion des von
+                  dmvnorm(as.matrix(X), mu, Sigma),  # dmvnorm() ausgegebenen Vektors
+                  nrow = x_res)
+
+  # Visualisierung
+  contour(
+  x_1,
+  x_2,
+  p,
+  xlim  = c(x_min,x_max),
+  ylim  = c(x_min,x_max),
+  xlab  = TeX("$x_1$"),
+  ylab  = TeX("$x_2$"),
+  nlevels   = 5)
+  text(1,2.2, L[[i]], xpd = TRUE)
+  i = i + 1
+}
+
+# export to pdf
+dev.copy2pdf(                                                                    # export to PDF
+             file   = file.path(fdir, "mvda_6_mvnwdf.pdf"),                 # filename
+             width  = 8,                                                         # PDF width
+             height = 4                                                          # PDF height
+             )
+
+```
+
+# Konstruktion und Definition
+\textcolor{darkblue}{Visualisierung bivariater Normalverteilungsdichtefunktionen}
+\vspace{2mm}
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("6_Abbildungen/mvda_6_mvnwdf.pdf")
+```
+
+# Konstruktion und Definition
+
+\textcolor{darkblue}{Realisierung bivariater normalverteilter Zufallsvektoren}
+\footnotesize
+\setstretch{1.1}
+\vspace{1mm}
+
+```{r}
+
+# R Paket für multivariate Normalverteilungen
+library(mvtnorm)
+
+# Parameterdefinition
+mu     = c(1,1)                                # \mu \in \mathbb{R}^2
+Sigma  = matrix(c(0.2,  0.15,  0.15, 0.2), 2)  # \Sigma in \mathbb{R}^{2 \times 2}
+
+# Zufallsvektorrealisierungen
+rmvnorm(n = 10, mu, Sigma)
+```
+
+# Konstruktion und Definition
+\textcolor{darkblue}{Realisierung bivariater normalverteilter Zufallsvektoren}
+\vspace{2mm}
+
+```{r, eval = F, echo = F}
+
+# R Paket für multivariate Normalverteilungen
+library(mvtnorm)
+
+# Abbildungsparameter
+library(latex2exp)
+graphics.off()
+fdir        =  file.path(getwd(), "6_Abbildungen")
+dev.new()
+par(
+family      = "sans",
+mfcol       = c(1,3),
+pty         = "s",
+bty         = "l",
+lwd         = 1,
+las         = 1,
+mgp         = c(2,1,0),
+xaxs        = "i",
+yaxs        = "i",
+font.main   = 1,
+cex         = .7,
+cex.main    = 1.2)
+
+# Parameterdefinition
+mu     = c(1,1)                                      # \mu \in \mathbb{R}^2
+S      = list(matrix(c(0.2,  0.15,  0.15, 0.2), 2),  # \Sigma in \mathbb{R}^{2 \times 2}
+              matrix(c(0.2,  0.00,  0.00, 0.2), 2),  # \Sigma in \mathbb{R}^{2 \times 2}
+              matrix(c(0.2, -0.15, -0.15, 0.2), 2))  # \Sigma in \mathbb{R}^{2 \times 2}
+L      = list(expression(bgroup("(", atop("0.20  0.15", " 0.15  0.20"), ")")),
+              expression(bgroup("(", atop("0.20  0.00", " 0.00  0.20"), ")")),
+              expression(bgroup("(", atop("0.20 -0.15", "-0.15  0.20"), ")")))
+
+
+
+# Kovarianzparametervariantenschleife
+i = 1
+for (Sigma in S){
+
+  # Zufallsvektorrealisierungen
+  samples = rmvnorm(n = 200, mu, Sigma)
+
+  # Visualisierung
+  plot(
+  samples,
+  xlim  = c(0,2),
+  ylim  = c(0,2),
+  xlab  = TeX("$x_1$"),
+  ylab  = TeX("$x_2$"),
+  pch   = 21,
+  col   = "white",
+  bg    = "gray60",
+  cex   = 1.5)
+  text(1,2.2, L[[i]], xpd = TRUE)
+  i = i + 1
+}
+
+# export to pdf
+dev.copy2pdf(                                                                    # export to PDF
+             file   = file.path(fdir, "mvda_6_rmvnorm.pdf"),                     # filename
+             width  = 8,                                                         # PDF width
+             height = 4                                                          # PDF height
+             )
+
+```
+
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("6_Abbildungen/mvda_6_rmvnorm.pdf")
+```
+
+#
+\large
+\setstretch{2.8}
+\vfill
+Konstruktion und Definition
+
+**Marginale Normalverteilungen**
+
+Gemeinsame Normalverteilungen
+
+Bedingte Normalverteilungen
+
+Selbstkontrollfragen
+\vfill
+
+# Marginale  Normalverteilungen
+\footnotesize
+\begin{theorem}[Marginale Normalverteilungen]
+\justifying
+\normalfont
+Es sei $m := k + l$ und $\xi = (\xi_1,...,\xi_m)^T$ sei ein $m$-dimensionaler
+normalverteilter Zufallsvektor mit Erwartungswertparameter
+\begin{equation}
+\mu =
+\left(\begin{matrix}
+\mu_\ups \\
+\mu_\zeta
+\end{matrix}\right) \in \mathbb{R}^m,
+\end{equation}
+mit $\mu_\ups \in \mathbb{R}^k$ and $\mu_\zeta \in \mathbb{R}^l$ und Kovarianzmatrixparameter
+\begin{equation}
+\Sigma =
+\left(\begin{matrix}
+\Sigma_{\ups\ups} 	& \Sigma_{\ups\zeta} \\
+\Sigma_{\zeta\ups} 	& \Sigma_{\zeta\zeta}
+\end{matrix}\right) \in \mathbb{R}^{m \times m},
+\end{equation}
+mit $\Sigma_{\ups\ups}   \in \mathbb{R}^{k \times k}$,
+    $\Sigma_{\ups\zeta}  \in \mathbb{R}^{k \times l}$,
+    $\Sigma_{\zeta\ups}  \in \mathbb{R}^{l \times k}$,
+und $\Sigma_{\zeta\zeta} \in \mathbb{R}^{l \times l}$.
+Dann sind $\ups := (\xi_1,...,\xi_k)^T$ und $\zeta := (\xi_{k+1}, ...,\xi_m)^T$
+$k$- und $l$-dimensionale normalverteilte Zufallsvektoren, respektive, und es gilt
+\begin{equation}
+\ups \sim N(\mu_\ups,\Sigma_{\ups\ups}) \mbox{ and } \zeta \sim N(\mu_\zeta,\Sigma_{\xi\xi}),
+\end{equation}
+\end{theorem}
+
+Bemerkungen
+
+* Die Marginalverteilungen einer multivariaten Normalverteilung sind auch Normalverteilungen.
+* Die Parameter der Marginalverteilungen ergeben sich aus den Parametern der gemeinsamen Verteilung.
+* Für Beweise, siehe z.B. @mardia_1979, Kapitel 3 oder @anderson_2003, Kapitel.
+
+# Marginale  Normalverteilungen
+\textcolor{darkblue}{Marginale Normalverteilungen}
+\small
+\center
+$m := 2, k = 1, l = 1, \mu := \begin{pmatrix} 1 \\ 2 \end{pmatrix}, \Sigma := \begin{pmatrix} 0.10 & 0.08 \\ 0.08 & 0.15 \end{pmatrix}$
+
+```{r, eval = F, echo = F}
+
+# R Paket für multivariate Normalverteilungen
+library(mvtnorm)
+
+# Abbildungsparameter
+graphics.off()
+fdir        =  file.path(getwd(), "6_Abbildungen")
+dev.new()
+par(
+family      = "sans",
+mfcol       = c(1,3),
+pty         = "s",
+bty         = "l",
+lwd         = 1,
+las         = 1,
+mgp         = c(2,1,0),
+xaxs        = "i",
+yaxs        = "i",
+font.main   = 1,
+cex         = .7,
+cex.main    = 1.2)
+
+
+# Ergebnisraumdefintion
+x_min  = 0                                           # x_i Minimum
+x_max  = 3                                           # x_i Maxim
+x_res  = 1e3                                         # x_i Auflösung
+x_1    = seq(x_min, x_max, length.out = x_res)       # x_1 Raum
+x_2    = seq(x_min, x_max, length.out = x_res)       # x_2 Raum
+X      = expand.grid(x_1,x_2)                        # X = (x_1,x_2)^T Raum
+
+# Parameterdefinition
+mu     = c(1,2)                                      # \mu \in \mathbb{R}^2
+Sigma  = matrix(c(0.10, 0.08,
+                  0.08, 0.15),
+                nrow = 2,
+                byrow = TRUE)                        # \Sigma in \mathbb{R}^{2 \times 2}
+
+
+# Visualisierung gemeinsame Verteilung
+p      = matrix(                                     # Matrixkonversion des von
+                dmvnorm(as.matrix(X), mu, Sigma),    # dmvnorm() ausgegebenen Vektors
+                nrow = x_res)
+contour(
+x_1,
+x_2,
+p,
+xlim      =  c(x_min,x_max),
+ylim      =  c(x_min,x_max),
+xlab      = TeX("$y$"),
+ylab      = TeX("$z$"),
+main      = TeX("$N(x;\\mu,\\Sigma)$"),
+nlevels   = 10)
+
+# Visualisierung Marginalverteilungen
+p_marg   = list(dnorm(x_1, mu[1],Sigma[1,1]), dnorm(x_1, mu[2],Sigma[2,2]))
+l_marg   = c(TeX("$y$"), TeX("$z$"))
+L_marg   = c(TeX("$N(y;\\mu_\\upsilon,\\Sigma_{\\upsilon\\upsilon})$"), TeX("$N(z; \\mu_\\zeta,\\Sigma_{\\zeta\\zeta})$"))
+i        = 1
+for(i in 1:length(p_marg))
+plot(x_1,
+     p_marg[[i]],
+     type = "l",
+     xlab = l_marg[[i]],
+     ylim = c(0,5),
+     ylab = "",
+     main = L_marg[[i]]
+      )
+
+
+# export to pdf
+dev.copy2pdf(                                                                    # export to PDF
+             file   = file.path(fdir, "mvda_6_marginale_mvnorm.pdf"),            # filename
+             width  = 8,                                                         # PDF width
+             height = 4                                                          # PDF height
+             )
+
+```
+
+\vspace{-2mm}
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("6_Abbildungen/mvda_6_marginale_mvnorm.pdf")
+```
+
+#
+\large
+\setstretch{2.8}
+\vfill
+Konstruktion und Definition
+
+Marginale Normalverteilungen
+
+**Gemeinsame Normalverteilungen**
+
+Bedingte Normalverteilungen
+
+Selbstkontrollfragen
+\vfill
+
+# Gemeinsame Normalverteilungen
+\footnotesize
+\begin{theorem}[Gemeinsame Normalverteilungen]
+\justifying
+\normalfont
+$\xi$ sei ein $m$-dimensionaler normalverteilter Zufallsvektor mit WDF
+\begin{equation}
+p_\xi : \mathbb{R}^m \to \mathbb{R}_{>0},\,x\mapsto
+p_\xi(x) := N(x;\mu_\xi,\Sigma_{\xi\xi}) \mbox{ mit }
+\mu_\xi \in \mathbb{R}^m,
+\Sigma_{\xi\xi} \in \mathbb{R}^{m\times m},
+\end{equation}
+$A\in\mathbb{R}^{n\times m}$ sei eine Matrix, $b\in\mathbb{R}^n$ sei ein Vektor
+und $\ups$ sei ein $n$-dimensionaler bedingt normalverteilter Zufallsvektor mit
+bedingter WDF
+\begin{equation}
+p_{\ups|\xi}(\cdot|x) : \mathbb{R}^n \to \mathbb{R}_{>0},\, y\mapsto
+p_{\ups|\xi}(y|x) := N(y;A\xi+b,\Sigma_{\ups\ups}) \mbox{ mit }
+\Sigma_{\ups\ups} \in \mathbb{R}^{n\times n}.
+\end{equation}
+Dann ist der $m+n$-dimensionale Zufallsvektor $(\xi,\ups)^T$ normalverteilt mit (gemeinsamer) WDF
+\begin{equation}\label{eq:gauss_joint}
+p_{\xi,\ups} : \mathbb{R}^{m+n} \to \mathbb{R}_{>0},\, \begin{pmatrix} x \\ y \end{pmatrix} \mapsto
+p_{\xi,\ups}\left(\begin{pmatrix} x \\ y \end{pmatrix}\right) = N\left(\begin{pmatrix} x \\ y \end{pmatrix};
+\mu_{\xi,\ups}, \Sigma_{\xi,\ups} \right),
+\end{equation}
+mit $\mu_{\xi,\ups} \in \mathbb{R}^{m+n}$ and $\Sigma_{\xi,\ups} \in \mathbb{R}^{m+n \times m+n}$ und insbesondere
+\begin{equation}
+\mu_{\xi,\ups} = \left( \begin{matrix} \mu_\xi \\ A\mu_\xi + b \end{matrix} \right)
+\mbox{ und }
+\Sigma_{\xi,\ups} = \left(\begin{matrix} \Sigma_{\xi\xi} & \Sigma_{\xi\xi}A^T \\ A\Sigma_{\xi\xi} & \Sigma_{\ups\ups} + A\Sigma_{\xi\xi}A^T \end{matrix} \right).
+\end{equation}
+\end{theorem}
+Bemerkungen
+
+* Eine marginale und eine bedingte multivariate Normalverteilung induzieren eine gemeinsame Normalverteilung.
+* Die Parameter der gemeinsamen Verteilungen ergeben sich als linear-affine Transformation der Parameter der
+  induzierenden Verteilungen.
+
+# Multivariate Normalverteilungen
+\textcolor{darkblue}{Gemeinsame Normalverteilungen}
+\small
+\vspace{2mm}
+\center
+$m := 1, n := 1, \mu_\xi := 1, \Sigma_{\xi\xi} := 0.2, A := 1, b := 1, \Sigma_{\ups\ups} := 0.1$
+\vspace{-2mm}
+```{r, eval = F, echo = F}
+
+# R Paket für multivariate Normalverteilungen
+library(mvtnorm)
+
+# Abbildungsparameter
+graphics.off()
+library(latex2exp)
+fdir        =  file.path(getwd(), "6_Abbildungen")
+dev.new()
+par(
+family      = "sans",
+mfcol       = c(1,3),
+pty         = "s",
+bty         = "l",
+lwd         = 1,
+las         = 1,
+mgp         = c(2,1,0),
+xaxs        = "i",
+yaxs        = "i",
+font.main   = 1,
+cex         = .7,
+cex.main    = 1.2)
+
+# Ergebnisraumdefintion
+x_min  = -1                                          # x_i Minimum
+x_max  = 4                                           # x_i Maxim
+x_res  = 1e3                                         # x_i Auflösung
+x      = seq(x_min, x_max, length.out = x_res)       # x_1 Raum
+y      = seq(x_min, x_max, length.out = x_res)       # x_2 Raum
+xy     = expand.grid(x,y)                        # X = (x_1,x_2)^T Raum
+
+# Parameterdefinition
+mu_x      = 1                                        # \mu \in \mathbb{R}
+Sigma_xx  = 0.2                                      # \Sigma_xx in \mathbb{R}
+A         = 1                                        # A
+b         = 1                                        # b
+Sigma_yy  = 0.1                                      # \Sigma_yy
+
+mu_xy     = c(mu_x, A*mu_x + b)
+Sigma_xy  = matrix(c(Sigma_xx  , Sigma_xx*t(A),
+                     A*Sigma_xx, Sigma_yy + A*Sigma_xx*t(A)),
+                   nrow = 2,
+                   byrow = TRUE)
+
+
+# Visualisierung marginale Verteilung
+plot(
+x,
+dnorm(x, mu_x, sqrt(Sigma_xx)),
+type = "l",
+xlab = TeX("$x$"),
+ylim = c(0,2),
+ylab = "",
+main = TeX("$p(x) = N(x;\\mu_\\xi,\\Sigma_{\\xi\\xi})$"))
+
+# Visualisierung bedingte Verteilung
+plot(
+y,
+dnorm(y, A*1 + b, sqrt(Sigma_yy)),
+type = "l",
+xlab = TeX("$y$"),
+ylim = c(0,2),
+ylab = "",
+main = TeX("$p(y|x) = N(y; Ax + b, \\Sigma_{\\upsilon\\upsilon})$"))
+text(0,1.75, TeX("$x = 1$"), cex = 1.2)
+
+
+# Visualisierung gemeinsame Verteilung
+p_xy    = matrix(                                     # Matrixkonversion des von
+                dmvnorm(as.matrix(xy), mu_xy, Sigma_xy),    # dmvnorm() ausgegebenen Vektors
+                nrow = x_res)
+contour(
+x,
+y,
+p_xy,
+xlim      = c(x_min,x_max),
+ylim      = c(x_min,x_max),
+xlab      = TeX("$x$"),
+ylab      = TeX("$y$"),
+main      = TeX("$p((x,y)^T) = N((x,y)^T; \\mu_{\\xi,\\upsilon},\\Sigma_{\\xi,\\upsilon})$"),
+nlevels   = 5)
+
+
+
+# export to pdf
+dev.copy2pdf(                                                                    # export to PDF
+             file   = file.path(fdir, "mvda_6_gemeinsame_mvnorm.pdf"),            # filename
+             width  = 8,                                                         # PDF width
+             height = 4                                                          # PDF height
+             )
+
+```
+
+```{r, echo = FALSE, out.width = "105%"}
+knitr::include_graphics("6_Abbildungen/mvda_6_gemeinsame_mvnorm.pdf")
+```
+
+
+#
+\large
+\setstretch{2.8}
+\vfill
+Konstruktion und Definition
+
+Marginale Normalverteilungen
+
+Gemeinsame Normalverteilungen
+
+**Bedingte Normalverteilungen**
+
+Selbstkontrollfragen
+\vfill
+
+# Bedingte Normalverteilungen
+\footnotesize
+\begin{theorem}[Bedingte Normalverteilungen]
+\justifying
+\normalfont
+$(\xi,\ups)$ sei ein $m+n$-dimensionaler normalverteilter Zufallsvektor mit WDF
+\begin{equation}
+p_{\xi,\ups} : \mathbb{R}^{m + n} \to \mathbb{R}_{>0}, (x,y) \mapsto
+p_{\xi,\ups}(x,y) := N\left((x,y); \mu_{\xi,\ups}, \Sigma_{\xi,\ups}\right),
+\end{equation}
+mit
+\begin{equation}
+\mu_{\xi,\ups} = \left(\begin{matrix} \mu_\xi \\ \mu_\ups \end{matrix} \right),
+\Sigma_{\xi,\ups} = \left(\begin{matrix} \Sigma_{\xi\xi} & \Sigma_{\xi\ups} \\ \Sigma_{\ups\xi} & \Sigma_{\ups\ups} \end{matrix} \right),
+\end{equation}
+mit $x,\mu_\xi \in \mathbb{R}^m, y,\mu_\ups\in\mathbb{R}^n$ and  $\Sigma_{\xi\xi} \in \mathbb{R}^{m\times m}, \Sigma_{\xi\ups} \in \mathbb{R}^{m\times n}, \Sigma_{\ups\ups} \in \mathbb{R}^{n \times n}$. Dann ist die
+bedingte Verteilung von $\xi$ gegeben $\ups$ eine $m$-dimensionale Normalverteilung
+mit bedingter WDF
+\begin{equation}
+p_{\xi|\ups}(\cdot|y) : \mathbb{R}^m \to \mathbb{R}_{>0}, x \mapsto p_{\xi|\ups}(x|y) :=
+N(x;\mu_{\xi|\ups},\Sigma_{\xi|\ups})
+\end{equation}
+mit
+\begin{equation}\label{eq:gauss_cond_exp}
+\mu_{\xi|\ups} = \mu_\xi  + \Sigma_{\xi\ups}\Sigma_{\ups\ups}^{-1}(\ups-\mu_\ups) \in \mathbb{R}^m
+\end{equation}
+und
+\begin{equation}\label{eq:gauss_cond_var}
+\Sigma_{\xi|\ups} = \Sigma_{\xi\xi}  - \Sigma_{\xi\ups}\Sigma_{\ups\ups}^{-1}\Sigma_{\ups\xi} \in \mathbb{R}^{m\times m}.
+\end{equation}
+\end{theorem}
+Bemerkungen
+
+* Die Parameter einer bedingten (multivariaten) Normalverteilung ergeben sich
+  aus den Parametern einer gemeinsamen multivariaten Normalverteilung. Im Zusammenspiel
+  mit den vorherigen Theoremen können die Parameter bedingter und marginale
+  Normalverteilungen aus den Parametern der komplementären bedingten und marginalen
+  Normalverteilungen bestimmt werden.
+
+# Bedingte Normalverteilungen
+\textcolor{darkblue}{Bedingte Normalverteilungen}
+\small
+\center
+$m := 2, n := 1, \mu := \begin{pmatrix} 1 \\ 2 \end{pmatrix}, \Sigma := \begin{pmatrix} 0.12 & 0.09 \\ 0.09 & 0.12 \end{pmatrix}$
+
+```{r, eval = F, echo = F}
+# R Paket für multivariate Normalverteilungen
+library(mvtnorm)
+
+# Abbildungsparameter
+graphics.off()
+library(latex2exp)
+fdir        =  file.path(getwd(), "6_Abbildungen")
+dev.new()
+par(
+family      = "sans",
+mfcol       = c(1,3),
+pty         = "s",
+bty         = "l",
+lwd         = 1,
+las         = 1,
+mgp         = c(2,1,0),
+xaxs        = "i",
+yaxs        = "i",
+font.main   = 1,
+cex         = .7,
+cex.main    = 1.2)
+
+
+# Ergebnisraumdefintion
+x_min  = 0                                           # x_i Minimum
+x_max  = 4                                           # x_i Maxim
+x_res  = 1e3                                         # x_i Auflösung
+x      = seq(x_min, x_max, length.out = x_res)       # x Raum
+y      = seq(x_min, x_max, length.out = x_res)        # y Raum
+X      = expand.grid(x,y)                            # (x,y)^T Raum
+
+# Parameterdefinition
+mu     = c(1,2)                                      # \mu \in \mathbb{R}^2
+Sigma  = matrix(c(0.12, 0.09,
+                  0.09, 0.12),
+                nrow = 2,
+                byrow = TRUE)                        # \Sigma in \mathbb{R}^{2 \times 2}
+
+
+# Visualisierung gemeinsame Verteilung
+p      = matrix(                                     # Matrixkonversion des von
+                dmvnorm(as.matrix(X), mu, Sigma),    # dmvnorm() ausgegebenen Vektors
+                nrow = x_res)
+contour(
+x,
+y,
+p,
+xlim      = c(x_min,x_max),
+ylim      = c(x_min,x_max),
+xlab      = TeX("$x$"),
+ylab      = TeX("$y$"),
+main      = TeX("$p(x,y) = N((x,y)^T; \\mu_{\\xi,\\upsilon},\\Sigma_{\\xi,\\upsilon})$"),
+nlevels   = 8)
+abline(1.5,0)
+abline(2.5,0)
+text(3.5,1, TeX("$y = 1.5$"))
+text(3.5,3, TeX("$y = 2.8$"))
+
+# Visualsierung bedingter Verteilung
+plot(
+x,
+dnorm(x, mu_x + Sigma[1,2]*(1/Sigma[2,2])*(1.5 - mu[2]),sqrt(Sigma[1,1] - Sigma[1,2]*(1/Sigma[2,2]*Sigma[2,1]))),
+type = "l",
+xlim = c(x_min,x_max),
+ylim = c(0,2),
+xlab = TeX("$x$"),
+ylab = "",
+main = TeX("$p(x|y) = N(x; \\mu_{\\xi|\\upsilon},\\Sigma_{\\xi|\\upsilon})$"))
+text(3.5,1.8, TeX("$y = 1.5$"))
+
+# Visualsierung bedingter Verteilung
+plot(
+x,
+dnorm(x, mu_x + Sigma[1,2]*(1/Sigma[2,2])*(2.8 - mu[2]),sqrt(Sigma[1,1] - Sigma[1,2]*(1/Sigma[2,2]*Sigma[2,1]))),
+type = "l",
+xlim = c(x_min,x_max),
+ylim = c(0,2),
+xlab = TeX("$x$"),
+ylab = "",
+main = TeX("$p(x|y) = N(x; \\mu_{\\xi|\\upsilon},\\Sigma_{\\xi|\\upsilon})$"))
+text(3.5,1.8, TeX("$y = 2.8$"))
+
+# export to pdf
+dev.copy2pdf(file = file.path(fdir, "mvda_6_bedingte_mvnorm.pdf"), width = 8, height = 4)                                           
+```
+
+\vspace{-2mm}
+```{r, echo = FALSE, out.width = "100%"}
+knitr::include_graphics("6_Abbildungen/mvda_6_bedingte_mvnorm.pdf")
+```
+
+#
+\large
+\setstretch{2.8}
+\vfill
+Konstruktion und Definition
+
+Marginale Normalverteilungen
+
+Gemeinsame Normalverteilungen
+
+Bedingte Normalverteilungen
+
+**Selbstkontrollfragen**
+\vfill
+
+
+# Selbstkontrollfragen
+\setstretch{3}
+\small
+\begin{enumerate}
+\item Definieren Sie die WDF einer univariaten normalverteilten Zufallsvariable.
+\item Geben Sie das Theorem zur Konstruktion bivariater Normalverteilungen wieder.
+\item Definieren Sie die WDF eines multivariaten normalverteilten Zufallsvektors.
+\item Geben Sie das Theorem zu Marginalen Normalverteilungen wieder.
+\item Geben Sie das Theorem zu Gemeinsamen Normalverteilungen wieder.
+\item Geben Sie das Theorem zu Bedingten Normalverteilungen wieder.
+\end{enumerate}
+
+# Referenzen
+\footnotesize
